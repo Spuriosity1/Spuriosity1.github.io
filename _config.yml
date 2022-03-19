@@ -1,12 +1,12 @@
-title: Parchment
-author: pro-panda
-subtitle: The life of a frustrated engineer
+title: Commutators and Capacitors
+author: spuriosity1
+subtitle: Jack of all Trades, Master of None
 
-url: "https://rahul-bothra.github.io"
-baseurl: "/parchment"
+url: "https://spuriosity1.github.io"
+baseurl: ""
 
 footer_only_homepage: true
-footer_url: "https://github.com/rahul-bothra"
+footer_url: "https://github.com/Spuriosity1"
 footer_text: "Theme by rahul-bothra"
 
 profile-picture: assets/profile.png
@@ -17,8 +17,16 @@ sass:
     style: compressed
     sass_dir: css
 
+plugins:
+ - jekyll-katex
+
 navbar:
  - name: "About"
    link: "about"
- - name: "Resume"
-   absolute-link: "https://rahul-bothra.github.io/CV.pdf"
+
+katex:
+  js_path: "{{ Gem::lib_path }}/assets/js"  # Path used to search for katex.min.js
+  rendering_options:
+    # Default KaTeX rendering options. See https://github.com/Khan/KaTeX#rendering-options
+    throw_error: true                       # throwOnError - set to false if you want rendering to output error as text rather than a build error
+    error_color: "#cc0000"                  # errorColor
