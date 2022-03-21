@@ -5,8 +5,6 @@ subtitle: Jack of all Trades, Master of None
 url: "https://spuriosity1.github.io"
 baseurl: ""
 
-plugins:
- - jekyll-katex
 
 footer_only_homepage: true
 footer_url: "https://github.com/Spuriosity1"
@@ -19,6 +17,10 @@ permalink: /:year-:month-:day-:title/
 sass:
     style: compressed
     sass_dir: css
+
+
+kramdown:
+  math_engine: katex
 
 
 navbar:
