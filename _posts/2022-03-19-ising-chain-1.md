@@ -1,7 +1,7 @@
 ---
 layout: post
-title: Introduction to condensed matter field field theory via the transverse-field Ising model
-subtitle: as crazy as it sounds...
+title: The transverse-field Ising model
+subtitle: An introduction to condensed matter field theory and topological phase transitions
 tags: [quantum, cond-mat]
 ---
 
@@ -17,5 +17,25 @@ summarise a few key exact duality transforms here should anyone need to find the
 {% katexmm %}
 A _spin_ is a collection of three operators acting on the Hilbert space $\mathbb{C}^{2s+1}$. The
 collection of these operators also represents a $2s+1$-dimensional representation of $SU(2)$, aka
-$\text{Spin(s)}$. 
+$\text{Spin(s)}$. The generators of the Lie group (and therefore any of their representations)
+satisfy the canonical spin algebra
+
+$$
+[S^i, S^j] = 2i \epsilon^{ijk}S^k
+$$
+
+It's usually more helpful to reformulate these spins as ladder operators, $S^\pm = S^x \pm i S^y$.
+
+
+
+
+
+
+
+
+
+
+
+
+
 {% endkatexmm %}
