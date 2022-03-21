@@ -24,7 +24,11 @@ $$
 [S^i, S^j] = 2i \epsilon^{ijk}S^k
 $$
 
-It's usually more helpful to reformulate these spins as ladder operators, $S^\pm = S^x \pm i S^y$.
+It's usually more helpful to reformulate these spins as ladder operators, $S^\pm = \frac{1}{2}\left[S^x \pm i S^y\right]$. 
+
+
+
+
 
 
 
