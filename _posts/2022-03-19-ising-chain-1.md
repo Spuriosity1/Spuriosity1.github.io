@@ -67,17 +67,17 @@ $$[a, a^\dagger] = 1$$
 ## Jordan-Wigner transformation
 
 Define the string operator $$K_j = \prof_{l=0}^{j-1} \sigma_j^z$$. The Jordan-Wigner fermion is
-$c_j
+defined as
+$$c_j = K_j S^+_j, c_j^\dagger = (c_j)^\dagger$$.
 
 These operators obey the correct anticommutation relations and have the correct dimensionality to
-serve as a faithful representation of 
+potentially form a complete set of commuting observables.
 
 # Video Recordings
 
-## Seminar 1: Introduction to fields
-Exercises:
+## [Seminar 1: Introduction to fields](https://www.youtube.com/watch?v=uvkWrG-8gVU)
 **Filling in the gaps**
-Show that for Jordan-Wigner operators $$c_j = K_j S^+_j, c_j^\dagger = (c_j)^\dagger$$
+Show that for Jordan-Wigner operators $$c_j, c_j^\dagger$$
 
 1. $$\{c_i, c_j^\dagger\} = \delta_{ij}$$
 2. $$\{c_i, c_j\} = \{c_i^\dagger, c_j^\dagger\} = 0$$
@@ -90,9 +90,10 @@ canonical commutators.
 Show that for any fermion $c$, $c^dagger c c^\dagger = c^dagger$ 
 
 **Essence of quantum mechanics**
-Let $$\mathcal{H}$$ be a finite dimensional vector space. Prove that if one has a collection of $n$
-commuting operators $$A_n$$, each of which have $m_i$ distinct eigenvalues $\lamnda_i$, then
+Let $$\mathcal{H}$$ be a finite dimensional vector space. Prove that if one has a collection of $$n$$
+commuting operators $$A_n$$, each of which have $$m_i$$ distinct eigenvalues $$\lambda_i$$, then
 1. $$\operatorname{dim}(\mathcal{H}) = \prod_{i=1}^n m_i$$
-2. The set $$ \{ |\lambda_1\rangle \otimes ... \otimes |\lambda_n\rangle \}$$, where
-   $$|\lambda_i\rangle$$ run over all eigenvectors of $$A_i$$, is a basis for $$\mathcal{H}$$.
-
+2. The set $$ \{ \ket{\lambda_1} \otimes ... \otimes \ket{\lambda_n} \}$$, where
+   $$\ket{\lambda_i}$$ run over all eigenvectors of $$A_i$$, is a basis for $$\mathcal{H}$$.
+3. If $$H = \sum_{i=1}^n \epsilon_i A_i, A_i$$ positive semidifinite and $$\epsilon_i \ge 0$$, then
+   the lowest energy state corresponds to a choosing the minimum eigenvalues of all the $A_i$$'s.
