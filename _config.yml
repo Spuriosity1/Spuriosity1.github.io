@@ -19,8 +19,6 @@ sass:
     sass_dir: css
 
 
-kramdown:
-  math_engine: katex
 
 
 navbar:
