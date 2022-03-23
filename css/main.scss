@@ -30,9 +30,10 @@ hr {
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 code {
-    background-color: #d8e7ff;
     color: #002b72;
 }
+// code highlighting
+@import url(pygments-css/native.css);
 
 // divs
 
@@ -294,9 +295,18 @@ table tr th :last-child, table tr td :last-child {
     margin: 0;
 }
 
+td.hl {
+    background-color: #cccccc;
+    font-weight: bold;
+}
+
 // KaTeX
 .katex {
     font-size: 1em;
     line-height: 1;
 }
 
+// code block formatting
+figure.highlight {
+    padding: .1em .6em;
+}

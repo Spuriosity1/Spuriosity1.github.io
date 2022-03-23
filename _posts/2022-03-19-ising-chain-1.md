@@ -2,7 +2,8 @@
 layout: post
 title: The transverse-field Ising model
 subtitle: An introduction to condensed matter field theory and topological phase transitions
-tags: [quantum, cond-mat]
+tags: [quantum, cond-mat, seminar-series]
+katex: true
 ---
 
 
