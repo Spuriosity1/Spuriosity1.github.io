@@ -113,8 +113,8 @@ let materialsA = {
 }
 
 let materialsB = {
-		'Dy': new THREE.MeshPhongMaterial( {color: 0x638043, flatShading: false} ),
-		'Ti': new THREE.MeshPhongMaterial( {color: 0x604380, flatShading: false} )
+		'Dy': new THREE.MeshPhongMaterial( {color: 0x638003, flatShading: false} ),
+		'Ti': new THREE.MeshPhongMaterial( {color: 0x604350, flatShading: false} )
 }
 
 
@@ -133,7 +133,7 @@ function init() {
 
     // CAMERA
     camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 5000);
-    camera.position.set(-80, 100, 200);
+    camera.position.set(100, 100, 200);
 
     // RENDERER
     renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -147,7 +147,7 @@ function init() {
 
     // CAMERA MOVEMENT CONTROLS
     controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.target.set(0, 0, 0);
+    controls.target.set(Nx*4, Ny*4, Nz*4);
     controls.enableDamping = true;
     controls.update();
 
@@ -325,9 +325,17 @@ function onShapeToggle(isdual) {
 
 // Start the program
 document.addEventListener("DOMContentLoaded",function () {
+		document.getElementById('Dy_slider').value = 100;
+		document.getElementById('Ti_slider').value = 100;
+		document.getElementById('pyro_Dy_slider').value = 100;
+		document.getElementById('pyro_Ti_slider').value=100;
+
     window.addEventListener('resize', onWindowResize, false);
     init();
     animate();
+
+		onShapeToggle('Dy')
+		onShapeToggle('Ti')
 });
 
 
