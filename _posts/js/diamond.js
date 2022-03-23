@@ -79,9 +79,9 @@ const fcc_coords = {'Dy': direction.fcc_Dy, 'Ti': direction.fcc_Ti};
 let scene, camera, renderer, controls, clickMouse, moveMouse, raycaster;
 
 // Parameters for the lattice
-let Nx = 4;
-let Ny = 4;
-let Nz = 4;
+let Nx = 2;
+let Ny = 2;
+let Nz = 2;
 
 let unitcells = []
 
@@ -119,8 +119,8 @@ let materialsB = {
 
 
 let materials_pyro = {
-		'Dy': new THREE.MeshPhongMaterial( {color: 0x040404, flatShading: false} ),
-		'Ti': new THREE.MeshPhongMaterial( {color: 0x888888, flatShading: false} )
+		'Dy': new THREE.MeshPhongMaterial( {color: 0x040404, flatShading: false, transparent: true} ),
+		'Ti': new THREE.MeshPhongMaterial( {color: 0x888888, flatShading: false, transparent: true} )
 }
 
 
@@ -133,7 +133,7 @@ function init() {
 
     // CAMERA
     camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 5000);
-    camera.position.set(100, 100, 200);
+    camera.position.set(20, 20, 40);
 
     // RENDERER
     renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -163,6 +163,8 @@ function init() {
     clickMouse = new THREE.Vector2();
     moveMouse = new THREE.Vector2();
 
+    scene.fog = new THREE.Fog();
+
     // FLOOR
 //    let floor = new THREE.Mesh(
 //        new THREE.BoxBufferGeometry(2000, 3, 2000),
@@ -190,6 +192,7 @@ function init() {
 			}
 		    for (key of ['Dy','Ti']){
 				    for (xyz of fcc_coords[key]) {
+							// quick and dirty; horrible style, but it does the job
 						x = i*direction.Lx + xyz[0];
 						y = j*direction.Ly + xyz[1];
 						z = k*direction.Lz + xyz[2];
@@ -214,13 +217,23 @@ function init() {
 						// Pyrochlore sites are indexed off the A sublattice
 						
 						for (let subl=0; subl<4; subl++){
-								
+								let pyr = direction.pyro[subl];
+
+								// pyr is the vector describing the orientation of the plaquette
+								// from the A sublattice
+								let xp = x + pyr[0];
+								let yp = y + pyr[1];
+								let zp = z + pyr[2];
+
+
+
 								sphere = new THREE.Mesh(shapes_pyro[key], materials_pyro[key]);
-								sphere.position.x = x + direction.pyro[subl][0];
-								sphere.position.y = y + direction.pyro[subl][1];
-								sphere.position.z = z + direction.pyro[subl][2];
+								sphere.position.x = xp;
+								sphere.position.y = yp; 
+								sphere.position.z = zp; 
 								scene.add(sphere);
 								cell['pyro_'+key].push(sphere);
+
 						}
 					}
 		    }
@@ -272,6 +285,7 @@ function update_shape(member,subl,shape){
 			for (let k=0; k<Nz; k++){
 				unitcells[i][j][k][member].forEach(function(sph, i){
 								if (i%2 == subl% 2) {
+										sph.geom
 										sph.geometry=shape;
 								} 
 						});
@@ -280,7 +294,92 @@ function update_shape(member,subl,shape){
 	}
 }
 
-  		
+
+function construct_hexagon(subl){
+		// the hexagon
+		hex = new THREE.BufferGeometry();
+		let positions = [];
+		let normals = [];
+		let uvs = [];
+
+		//oriented out pf the A sites
+		let norm = direction.pyro[subl];
+
+		// iterate over neighbours
+		for (let n=0; n<6; n++){
+				pos1 = direction.plaqt[subl][n];
+				pos2 = direction.plaqt[subl][(n+1)%6];
+
+				positions.push(...pos1);
+				normals.push(...norm);
+				uvs.push(0,1);
+
+				positions.push(...pos2);
+				normals.push(...norm);
+				uvs.push(1,1);
+
+				positions.push(0,0,0);
+				normals.push(...norm);
+				uvs.push(0,0)
+
+
+		}
+		const positionNumComponents = 3;
+		  const normalNumComponents = 3;
+		  const uvNumComponents = 2;
+		  hex.setAttribute(
+			  'position',
+			  new THREE.BufferAttribute(new Float32Array(positions), positionNumComponents));
+		  hex.setAttribute(
+			  'normal',
+			  new THREE.BufferAttribute(new Float32Array(normals), normalNumComponents));
+		  hex.setAttribute(
+			  'uv',
+			  new THREE.BufferAttribute(new Float32Array(uvs), uvNumComponents));
+		return hex;
+}
+
+
+
+function onShapeToggle(isdual) {
+    if ( ! document.getElementById(isdual+'_checkbox').checked ) {
+			// Spheres
+        update_shape(isdual, 0, shapesA[isdual]);
+        update_shape(isdual, 1, shapesB[isdual]);
+	} else {
+		tetraA = new THREE.TetrahedronGeometry(2);
+		tetraB = new THREE.TetrahedronGeometry(2);
+		tetraB.applyMatrix4(flip)
+        update_shape(isdual, 0, tetraA);
+        update_shape(isdual, 1, tetraB);
+    }
+}
+
+
+const hexagons = [construct_hexagon(0), construct_hexagon(1),construct_hexagon(2),construct_hexagon(3)];
+
+function onHexToggle(isdual) {
+    if ( ! document.getElementById('pyro_'+isdual+'_checkbox').checked ) {
+// horrible kludge
+        update_shape('pyro_'+isdual, 0, shapes_pyro[isdual]);
+        update_shape('pyro_'+isdual, 1, shapes_pyro[isdual]);
+
+		materials_pyro[isdual].opacity=1;
+
+	} else {
+			materials_pyro[isdual].opacity=0.5;
+			for (let i=0; i<Nx; i++){
+				for (let j=0; j<Ny; j++){
+					for (let k=0; k<Nz; k++){
+						unitcells[i][j][k]['pyro_'+isdual].forEach(function(sph, l){
+							sph.geometry=hexagons[l%4];
+
+								});
+					}
+				}
+			}
+	}
+}
 
 // Interactivity
 document.getElementById('Dy_slider').oninput = function() {
@@ -308,34 +407,33 @@ document.getElementById('Dy_checkbox').onclick = ()=>onShapeToggle('Dy')
 
 document.getElementById('Ti_checkbox').onclick = ()=>onShapeToggle('Ti')
 
-function onShapeToggle(isdual) {
-    if ( ! document.getElementById(isdual+'_checkbox').checked ) {
-			// Spheres
-        update_shape(isdual, 0, shapesA[isdual]);
-        update_shape(isdual, 1, shapesB[isdual]);
-	} else {
-		tetraA = new THREE.TetrahedronGeometry(2);
-		tetraB = new THREE.TetrahedronGeometry(2);
-		tetraB.applyMatrix4(flip)
-        update_shape(isdual, 0, tetraA);
-        update_shape(isdual, 1, tetraB);
-    }
-}
+document.getElementById('pyro_Dy_checkbox').onclick = ()=>onHexToggle('Dy')
+
+document.getElementById('pyro_Ti_checkbox').onclick = ()=>onHexToggle('Ti')
+
 
 
 // Start the program
 document.addEventListener("DOMContentLoaded",function () {
-		document.getElementById('Dy_slider').value = 100;
-		document.getElementById('Ti_slider').value = 100;
-		document.getElementById('pyro_Dy_slider').value = 100;
-		document.getElementById('pyro_Ti_slider').value=100;
-
     window.addEventListener('resize', onWindowResize, false);
     init();
     animate();
 
-		onShapeToggle('Dy')
-		onShapeToggle('Ti')
+		onShapeToggle('Dy');
+		onShapeToggle('Ti');
+		onHexToggle('Dy');
+		onHexToggle('Ti');
+
+
+		document.getElementById('Dy_slider').value = 87;
+		document.getElementById('Ti_slider').value = 87;
+		document.getElementById('pyro_Dy_slider').value = 50;
+		document.getElementById('pyro_Ti_slider').value = 100;
+
+		update_sizeof('Ti',0.87);
+		update_sizeof('Ti',0.87);
+		update_sizeof('pyro_Dy',0.50);
+		update_sizeof('pyro_Ti',1);
 });
 
 

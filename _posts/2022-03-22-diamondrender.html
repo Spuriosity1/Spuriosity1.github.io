@@ -1,45 +1,64 @@
 ---
 layout: post
-title: 3D rendering
+title: Dual pyrochlore lattice 3D example
 subtitle: How does diamond work though?
 tags: [cond-mat, code]
 render3d: true
 ---
 <p>
-This is some text. Balahbafjisaji
+This simulaiton shows the structure of two 'dual' diamond lattices, called 'Dy' and 'Ti', and the
+pyrochlore lattices formed by placing sites on bond midpoints in the Anderson ice model fashion.
 </p>
 
+<!-- God I hate HTML -->
 
 <div class="slidecontainer">
 	Main (`Dy`) Diamond Lattice
   <input type="range" min="0" max="100" value="100" class="slider" id="Dy_slider"> 
 </div>
 
-  Show Main Tetrahedra
-  <label class="switch">
-    <input type="checkbox" id='Dy_checkbox'>
-      <span class="swslider"></span>
-  </label>
+Show as Tetrahedra
+<label class="switch">
+  <input type="checkbox" id='Dy_checkbox'>
+  <span class="swslider"></span>
+</label>
 <div class="slidecontainer">
 	Dual (`Ti`) Diamond Lattice
   <input type="range" min="0" max="100" value="100" class="slider" id="Ti_slider">
 </div>
 
-  Show Dual Tetrahedra
-  <label class="switch">
-	  <input type="checkbox" id="Ti_checkbox">
-      <span class="swslider"></span>
-  </label>
+Show as Tetrahedra
+<label class="switch">
+  <input type="checkbox" id="Ti_checkbox">
+  <span class="swslider"></span>
+</label>
+
 <div class="slidecontainer">
 	Main (`Dy`) Pyrochlore
   <input type="range" min="0" max="100" value="100" class="slider" id="pyro_Dy_slider">
+
 </div>                                                                      
+
+Show as Plaquettes
+
+<label class="switch">
+  <input type="checkbox" id="pyro_Dy_checkbox">
+  <span class="swslider"></span>
+</label>
+
 <div class="slidecontainer">                                                
 	Dual (`Ti`) Pyrochlore                                              
   <input type="range" min="0" max="100" value="100" class="slider" id="pyro_Ti_slider">
 </div>
 
-<div id='3D_TARGET' style="height:500px"></div>
+Show as Plaquettes
+<label class="switch">
+  <input type="checkbox" id="pyro_Ti_checkbox">
+  <span class="swslider"></span>
+</label>
+
+
+<div id='3D_TARGET' style="margin-top:2em;height:500px"></div>
 
 <script>
 {% include_relative js/diamond.js %}
