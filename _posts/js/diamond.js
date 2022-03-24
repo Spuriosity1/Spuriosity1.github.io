@@ -353,24 +353,39 @@ function construct_qsi(){
 let INTERSECTED;
 const pointer = new THREE.Vector2();
 
+
+function highlight_obj() {
+	INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
+	INTERSECTED.material.emissive.setHex( 0xff0000 );
+	INTERSECTED.material.transparent=false;
+}
+
+function unhighlight_obj() {
+	INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+	INTERSECTED.material.transparent=true;
+}
+
+
+
 function render() {
 	
 	raycaster.setFromCamera( pointer, camera );
 
 		const intersects = raycaster.intersectObjects( scene.children, false );
 		if ( intersects.length > 0 ) {
-			if ( INTERSECTED != intersects[ 0 ].object ) {
-				if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+			
+			if ( intersects.length>0 ) {
+				if ( INTERSECTED != intersects[ 0 ].object && intersects[ 0 ].object.visible) {
+					if ( INTERSECTED ) unhighlight_obj();
 
-				INTERSECTED = intersects[ 0 ].object;
-				INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
-				INTERSECTED.material.emissive.setHex( 0xff0000 );
-
+					INTERSECTED = intersects[ 0 ].object;
+					highlight_obj();
+				}
 			}
 
 		} else {
 
-			if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+			if ( INTERSECTED ) unhighlight_obj();
 			INTERSECTED = null;
 		}
 	renderer.render( scene, camera );
