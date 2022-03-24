@@ -89,38 +89,20 @@ let unitcells = []
 let mum = document.getElementById('3D_TARGET'); 
 
 // Assets
-//
-
-let shapesA = {
-		'Dy': new THREE.SphereGeometry(1,32,32),
-		'Ti': new THREE.SphereGeometry(1,32,32),
-}
-
-let shapesB = {
-		'Dy': new THREE.SphereGeometry(1,32,32),
-		'Ti': new THREE.SphereGeometry(1,32,32),
-}
-
-
-let shapes_pyro = {
-		'Dy': new THREE.SphereGeometry(0.8,32,32),
-		'Ti': new THREE.SphereGeometry(0.8,32,32),
-}
 
 let materialsA = {
-		'Dy': new THREE.MeshPhongMaterial( {color: 0x9cc968, flatShading: false} ),
-		'Ti': new THREE.MeshPhongMaterial( {color: 0x9568c9, flatShading: false} )
+		'Dy':  {color: 0x9cc968, flatShading: false, transparent: true} ,
+		'Ti':  {color: 0x9568c9, flatShading: false, transparent: true} 
 }
 
 let materialsB = {
-		'Dy': new THREE.MeshPhongMaterial( {color: 0x638003, flatShading: false} ),
-		'Ti': new THREE.MeshPhongMaterial( {color: 0x604350, flatShading: false} )
+		'Dy':  {color: 0x638003, flatShading: false, transparent: true} ,
+		'Ti':  {color: 0x604350, flatShading: false, transparent: true} 
 }
 
-
 let materials_pyro = {
-		'Dy': new THREE.MeshPhongMaterial( {color: 0x040404, flatShading: false, transparent: true} ),
-		'Ti': new THREE.MeshPhongMaterial( {color: 0x888888, flatShading: false, transparent: true} )
+		'Dy':  {color: 0x040404, flatShading: false, transparent: true},
+		'Ti':  {color: 0x888888, flatShading: false, transparent: true} 
 }
 
 
@@ -163,7 +145,7 @@ function init() {
     clickMouse = new THREE.Vector2();
     moveMouse = new THREE.Vector2();
 
-    scene.fog = new THREE.Fog();
+    // scene.fog = new THREE.Fog();
 
     // FLOOR
 //    let floor = new THREE.Mesh(
@@ -184,7 +166,7 @@ function init() {
 let qsi = {
 		m_spin: [], // all spins
         m_plaq: [], // all plaquettes
-		m_tera: [], // all tetrahedra
+		m_tetra: [], // all tetrahedra
 		m_ptetra: [] // all dual tetrahedra
 }
 
@@ -192,69 +174,169 @@ let qsi = {
 function spin_at(pos){
 	// make a copy so we don't do anything weird and nonlocal
 	pos = pos.slice()
+
+	let alldiv = (v, b) => v[0]%b ===0 && v[1]%b === 0 && v[2]%b ===0;
+
 	let sl = -1;
 	for (let i=0; i<4; i++) {
-		if (pos.every((xj,j) => (xj - direction.pyro[i][j]) %4 == 0 )){
+		if (alldiv(v3_sub(pos, direction.pyro[i]), 4)){
 			sl = i;
 			break;
 		}
 	}
 	if (sl < 0) throw "Invalid sublattice";
-	pos.map( (pos,i) => pos - direction.pyro[sl][i]);
+	pos = v3_sub(pos, direction.pyro[sl]);
 
 	let inc = -1;
 	for (let i=0; i<4; i++) {
-			if (pos.every((xj,j) => (xj - direction.fcc_Dy[i][j]) %8 == 0 )){
-					inc = i;
-					break;
-			}
+		if (alldiv(v3_sub(pos, direction.fcc_Dy[i]), 8) == 0){
+			inc = i;
+			break;
+		}
 	}
 	if (inc < 0) throw "Invalid FCC reference";
-	pos.map( (pos,i) => pos - direction.fcc_Dy[inc][i]);
+	pos = v3_sub(pos, fcc_Dy[inc]);
 
 	let x = mod(pos[0]/8, Nx);
 	let y = mod(pos[1]/8, Ny);
 	let z = mod(pos[2]/8, Nz);
 	let cell = (x*Ny+y)*Nz+z;
 
-
 	return qsi.m_spin[16*cell+4*inc+sl];
+}
+
+const flip = new THREE.Matrix4();
+flip.makeRotationX(Math.PI/2);
+const sphere_shape = new THREE.SphereGeometry(0.2,32,32);
+const tetraA_shape = new THREE.TetrahedronGeometry(Math.sqrt(3));
+const tetraB_shape = new THREE.TetrahedronGeometry(Math.sqrt(3));
+tetraB_shape.applyMatrix4(flip);
+
+function construct_hexagon_shape(subl){
+	// the hexagon
+	hex = new THREE.BufferGeometry();
+	let positions = [];
+	let normals = [];
+	let uvs = [];
+
+	//oriented out pf the A sites
+	let norm = direction.pyro[subl];
+
+	// iterate over neighbours
+	for (let n=0; n<6; n++){
+			pos1 = direction.plaqt[subl][n];
+			pos2 = direction.plaqt[subl][(n+1)%6];
+
+			positions.push(...pos1);
+			normals.push(...norm);
+			uvs.push(0,1);
+
+			positions.push(...pos2);
+			normals.push(...norm);
+			uvs.push(1,1);
+
+			positions.push(0,0,0);
+			normals.push(...norm);
+			uvs.push(0,0)
+
+
+	}
+	const positionNumComponents = 3;
+	  const normalNumComponents = 3;
+	  const uvNumComponents = 2;
+	  hex.setAttribute(
+		  'position',
+		  new THREE.BufferAttribute(new Float32Array(positions), positionNumComponents));
+	  hex.setAttribute(
+		  'normal',
+		  new THREE.BufferAttribute(new Float32Array(normals), normalNumComponents));
+	  hex.setAttribute(
+		  'uv',
+		  new THREE.BufferAttribute(new Float32Array(uvs), uvNumComponents));
+	return hex;
+}
+
+const hexagon_shapes = [0,1,2,3].map(i => construct_hexagon_shape(i));
+
+function v3_add(v1, v2){
+	return [v1[0] + v2[0], v1[1] + v2[1], v1[2] + v2[2]];
+}
+
+function v3_sub(v1, v2){
+	return [v1[0] - v2[0], v1[1] - v2[1], v1[2] - v2[2]];
 }
 
 function construct_qsi(){
 	for (let i=0; i<Nx; i++){
 		for (let j=0; j<Ny; j++){
 			for (let k=0; k<Nz; k++){
+				let cubic = [i*8, j*8, k*8];
+
+				// Spins and Tetrahedra
 				for (let fcc=0; fcc<4; fcc++) {
+					fcc_r = v3_add(cubic,direction.fcc_Dy[fcc]);
 				    for (let ssl=0; ssl<4; ssl++){
-						spin = unitcells[i][j][k]['pyro_Dy'][fcc*4+ssl]
-						// Monkey Patch 
+						pos = v3_add(fcc_r, direction.pyro[ssl]);
+						spin = new THREE.Mesh(sphere_shape, new THREE.MeshPhongMaterial(materials_pyro['Dy']));
 						spin.subl = ssl;
-						spin.plaqs = []
-						qsi.m_plaq.push(spin)
+						spin.plaqs = [];
+						spin.position.set(...pos);
+						
+						scene.add(spin);
+						qsi.m_spin.push(spin);
 				    }
-				    qsi.m_ptetra.push(unitcells[i][j][k]['Dy'][2*fcc])
-				    qsi.m_ptetra.push(unitcells[i][j][k]['Dy'][2*fcc+1])
-				}
-				for (let fcc=0; fcc<4; fcc++) {
-				    for (let psl=0; psl<4; psl++){
-						plaq = unitcells[i][j][k]['pyro_Ti'][fcc*4+psl]
-						// Monkey Patch 
-						plaq.subl = psl;
-						qsi.m_plaq.push(plaq)
-				    } 
-				    qsi.m_ptetra.push(unitcells[i][j][k]['Ti'][2*fcc])
-				    qsi.m_ptetra.push(unitcells[i][j][k]['Ti'][2*fcc+1])
+					tetraA = new THREE.Mesh(tetraA_shape, new THREE.MeshPhongMaterial(materialsA['Dy']));
+					tetraB = new THREE.Mesh(tetraB_shape, new THREE.MeshPhongMaterial(materialsB['Dy']));
+					tetraA.subl = 'A';
+					tetraB.subl = 'B';
+					tetraA.position.set(...v3_add(fcc_r,direction.diamond[0]));
+					tetraB.position.set(...v3_add(fcc_r,direction.diamond[1]));
+				    
+
+					scene.add(tetraA);
+					scene.add(tetraB);
+					qsi.m_tetra.push(tetraA);
+				    qsi.m_tetra.push(tetraB);
 				}
 
+				// Plaquettes and dual tetrahedra
+				for (let fcc=0; fcc<4; fcc++) {
+					fcc_r = v3_add(cubic,direction.fcc_Ti[fcc]);
+				    for (let psl=0; psl<4; psl++){
+						pos = v3_add(fcc_r, direction.pyro[psl]);
+
+						plaq = new THREE.Mesh(hexagon_shapes[psl], new THREE.MeshPhongMaterial(materials_pyro['Ti']));
+						plaq.subl = psl;
+						plaq.spins = [];
+						plaq.position.set(...pos);
+						
+						scene.add(plaq);
+						qsi.m_plaq.push(plaq);
+				    }
+					tetraA = new THREE.Mesh(tetraA_shape, new THREE.MeshPhongMaterial(materialsA['Ti']));
+					tetraB = new THREE.Mesh(tetraB_shape, new THREE.MeshPhongMaterial(materialsB['Ti']));
+					tetraA.subl = 'A';
+					tetraB.subl = 'B';
+					tetraA.position.set(...v3_add(fcc_r,direction.diamond[0]));
+					tetraB.position.set(...v3_add(fcc_r,direction.diamond[1]));
+				    
+
+					scene.add(tetraA);
+					scene.add(tetraB);
+					qsi.m_ptetra.push(tetraA);
+				    qsi.m_ptetra.push(tetraB);
+				}
+				
+
+				// REGISTRATION: spins and plaquettes (ignore the tetrahedra for now)
 				for (let p of qsi.m_plaq) {
 					for (let j = 0; j < 6; ++j) {
 						let r = [];
 						r[0] = p.position.x + direction.plaqt[p.subl][j][0];
 						r[1] = p.position.y + direction.plaqt[p.subl][j][1];
 						r[2] = p.position.z + direction.plaqt[p.subl][j][2];
-						s = spin_at(r);
-						s.plaqs.push(p);
+						// s = spin_at(r);
+						// s.plaqs.push(p);
 					}
 				}
 			}
@@ -263,10 +345,42 @@ function construct_qsi(){
 }
 
 
+
+///////////////////////////////////////////////////
+
+// Interactivity Implementation
+
+let INTERSECTED;
+const pointer = new THREE.Vector2();
+
+function render() {
+	
+	raycaster.setFromCamera( pointer, camera );
+
+		const intersects = raycaster.intersectObjects( scene.children, false );
+		if ( intersects.length > 0 ) {
+			if ( INTERSECTED != intersects[ 0 ].object ) {
+				if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+
+				INTERSECTED = intersects[ 0 ].object;
+				INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
+				INTERSECTED.material.emissive.setHex( 0xff0000 );
+
+			}
+
+		} else {
+
+			if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+			INTERSECTED = null;
+		}
+	renderer.render( scene, camera );
+}
+
+
 // Recursive function to render the scene
 function animate() {
     controls.update();
-    renderer.render(scene, camera);
+	render()
     requestAnimationFrame(animate);
 };
 
@@ -280,175 +394,62 @@ function onWindowResize() {
 }
 
 
-function update_sizeof(member,size){
-	for (let i=0; i<Nx; i++){
-		for (let j=0; j<Ny; j++){
-			for (let k=0; k<Nz; k++){
-				unitcells[i][j][k][member].forEach(
-						(sph) => {sph.scale.set(size,size,size);}
-				);
-			}
-		}
-	}
+// function getClicked3DPoint(evt) {
+//     evt.preventDefault();
+
+//     mousePosition.x = ((evt.clientX - canvasPosition.left) / canvas.width) * 2 - 1;
+//     mousePosition.y = -((evt.clientY - canvasPosition.top) / canvas.height) * 2 + 1;
+
+//     rayCaster.setFromCamera(mousePosition, camera);
+//     var intersects = rayCaster.intersectObjects(scene.getObjectByName('MyObj_s').children, true);
+
+//     if (intersects.length > 0)
+//         return intersects[0].point;
+// };
+let canvas;
+
+// raycasting
+function onPointerMove( event ) {
+	rect = canvas.getBoundingClientRect();
+	pointer.x = ( (event.clientX - rect.left) / rect.width ) * 2 - 1;
+	pointer.y = - ( (event.clientY-rect.top) / rect.height ) * 2 + 1;
 }
 
-
-function update_shape(member,subl,shape){
-	for (let i=0; i<Nx; i++){
-		for (let j=0; j<Ny; j++){
-			for (let k=0; k<Nz; k++){
-				unitcells[i][j][k][member].forEach(function(sph, i){
-								if (i%2 == subl% 2) {
-										sph.geom
-										sph.geometry=shape;
-								} 
-						});
-			}
-		}
-	}
-}
-
-
-function construct_hexagon(subl){
-		// the hexagon
-		hex = new THREE.BufferGeometry();
-		let positions = [];
-		let normals = [];
-		let uvs = [];
-
-		//oriented out pf the A sites
-		let norm = direction.pyro[subl];
-
-		// iterate over neighbours
-		for (let n=0; n<6; n++){
-				pos1 = direction.plaqt[subl][n];
-				pos2 = direction.plaqt[subl][(n+1)%6];
-
-				positions.push(...pos1);
-				normals.push(...norm);
-				uvs.push(0,1);
-
-				positions.push(...pos2);
-				normals.push(...norm);
-				uvs.push(1,1);
-
-				positions.push(0,0,0);
-				normals.push(...norm);
-				uvs.push(0,0)
-
-
-		}
-		const positionNumComponents = 3;
-		  const normalNumComponents = 3;
-		  const uvNumComponents = 2;
-		  hex.setAttribute(
-			  'position',
-			  new THREE.BufferAttribute(new Float32Array(positions), positionNumComponents));
-		  hex.setAttribute(
-			  'normal',
-			  new THREE.BufferAttribute(new Float32Array(normals), normalNumComponents));
-		  hex.setAttribute(
-			  'uv',
-			  new THREE.BufferAttribute(new Float32Array(uvs), uvNumComponents));
-		return hex;
-}
-
-
-
-function onShapeToggle(isdual) {
-    if ( ! document.getElementById(isdual+'_checkbox').checked ) {
-			// Spheres
-        update_shape(isdual, 0, shapesA[isdual]);
-        update_shape(isdual, 1, shapesB[isdual]);
-	} else {
-		tetraA = new THREE.TetrahedronGeometry(2);
-		tetraB = new THREE.TetrahedronGeometry(2);
-		tetraB.applyMatrix4(flip)
-        update_shape(isdual, 0, tetraA);
-        update_shape(isdual, 1, tetraB);
-    }
-}
-
-
-const hexagons = [construct_hexagon(0), construct_hexagon(1),construct_hexagon(2),construct_hexagon(3)];
-
-function onHexToggle(isdual) {
-    if ( ! document.getElementById('pyro_'+isdual+'_checkbox').checked ) {
-// horrible kludge
-        update_shape('pyro_'+isdual, 0, shapes_pyro[isdual]);
-        update_shape('pyro_'+isdual, 1, shapes_pyro[isdual]);
-
-		materials_pyro[isdual].opacity=1;
-
-	} else {
-			materials_pyro[isdual].opacity=0.5;
-			for (let i=0; i<Nx; i++){
-				for (let j=0; j<Ny; j++){
-					for (let k=0; k<Nz; k++){
-						unitcells[i][j][k]['pyro_'+isdual].forEach(function(sph, l){
-							sph.geometry=hexagons[l%4];
-
-								});
-					}
-				}
-			}
-	}
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Interactivity Attachments
 
-// Interactivity
-document.getElementById('Dy_slider').oninput = function() {
-	update_sizeof('Dy',this.valueAsNumber/100);
+function update_materials(which, op) {
+	qsi[which].forEach((t)=>{
+		t.material.opacity=op;
+		if (op ==0) {
+			t.visible=false;
+		} else {
+			t.visible=true;
+		}
+	});
 }
-
-document.getElementById('Ti_slider').oninput = function() {
-	update_sizeof('Ti',this.valueAsNumber/100);
-}
-
-
-document.getElementById('pyro_Dy_slider').oninput = function() {
-	update_sizeof('pyro_Dy',this.valueAsNumber/100);
-}
-
-document.getElementById('pyro_Ti_slider').oninput = function() {
-	update_sizeof('pyro_Ti',this.valueAsNumber/100);
-}
-
-const flip = new THREE.Matrix4()
-flip.makeRotationX(3.14159/2)
-
-// Swaps
-document.getElementById('Dy_checkbox').onclick = ()=>onShapeToggle('Dy')
-
-document.getElementById('Ti_checkbox').onclick = ()=>onShapeToggle('Ti')
-
-document.getElementById('pyro_Dy_checkbox').onclick = ()=>onHexToggle('Dy')
-
-document.getElementById('pyro_Ti_checkbox').onclick = ()=>onHexToggle('Ti')
-
 
 // Start the program
 document.addEventListener("DOMContentLoaded",function () {
+	
     window.addEventListener('resize', onWindowResize, false);
     init();
     animate();
 
-		onShapeToggle('Dy');
-		onShapeToggle('Ti');
-		onHexToggle('Dy');
-		onHexToggle('Ti');
+	document.getElementById('Dy_slider').oninput = function() {update_materials("m_tetra", this.valueAsNumber/100)} ;
+	document.getElementById('Ti_slider').oninput = function(){update_materials("m_ptetra", this.valueAsNumber/100)} ;
+	document.getElementById('pyro_Dy_slider').oninput = function(){update_materials("m_spin", this.valueAsNumber/100)} ;
+	document.getElementById('pyro_Ti_slider').oninput = function(){update_materials("m_plaq", this.valueAsNumber/100)} ;
+	
+	
+	for (slider of document.querySelectorAll('.slider')){
+		slider.oninput();
+	}
 
+	canvas= document.getElementById('3D_TARGET').children[0];
+	canvas.addEventListener('mousemove', onPointerMove);
 
-		document.getElementById('Dy_slider').value = 87;
-		document.getElementById('Ti_slider').value = 87;
-		document.getElementById('pyro_Dy_slider').value = 50;
-		document.getElementById('pyro_Ti_slider').value = 100;
-
-		update_sizeof('Ti',0.87);
-		update_sizeof('Ti',0.87);
-		update_sizeof('pyro_Dy',0.50);
-		update_sizeof('pyro_Ti',1);
 });
 
 
