@@ -20,7 +20,7 @@ summarise a few key exact duality transforms here should anyone need to find the
 A _boson_ is an eigenstate of the bosonic number operator $$a^\dagger a$$, which is composed of
 operators satisfying $$[a_i,a_j^\dagger] = \delta_{ij}$$. A single pair $$a_i, a^\dagger_i$$ acts on the Hilbert space
 $$\mathcal{F}_B = \operatorname{Span}\{
-|n\rangle | n \in \mathbb{Z}_{\ge 0} \} $$, while the full Hilbert space of $N$ bosons is $$\mathcal{F}_B^{\otimes
+|n\rangle | n \in \mathbb{Z}_{\ge 0} \} $$, while the full Hilbert space of $$N$$ bosons is $$\mathcal{F}_B^{\otimes
 N}$$. This space is sometimes called Fock space, hence the symbol $$\mathcal{F}$$. A given many body
 boson state can be represented as a product of operators acting on the _vacuum_ $$|\empty \rangle =
 |0,0,...,0\rangle$$
@@ -41,6 +41,9 @@ $$|n_1,n_2,...,n_N\rangle = \prod_{j=0}^N (a^\dagger)^{n_j} |\empty\rangle$$
 
 Note that a choice of what order to do the product in corresponds to a sign convention. This sign
 does not appear in expectation values, so is irrelevant.
+
+An important kind of Fermion is a _Majorana Fermion_ (sometimes called a 'real Fermion') 
+
 
 ## Spins
 A _spin_ is a collection of three operators acting on the Hilbert space $$\mathbb{C}^{2s+1}$$. The
@@ -84,14 +87,14 @@ Show that for Jordan-Wigner operators $$c_j, c_j^\dagger$$
 
 1. $$\{c_i, c_j^\dagger\} = \delta_{ij}$$
 2. $$\{c_i, c_j\} = \{c_i^\dagger, c_j^\dagger\} = 0$$
-3. $$ \sigma^-_j \sigma^\pm_j = c^\dagger_j c^#_j$$, where $$#$$ is $$\dagger$$ if $$\pm = -$$
+3. $$\sigma^-_j \sigma^\pm_j = c^\dagger_j c^\#_j$$, where $$\# =\dagger$$ if $$\pm = -$$
 
 **Self Consistency**
 Show that the fermion representaiton of $$\sigma^z_j = 1-2c^\dagger_j c_j$$ still obeys the
 canonical commutators.
 
 **Operator Absorption**
-Show that for any fermion $c$, $c^dagger c c^\dagger = c^dagger$. Hence show that $$c^\dagger = - \exp(i\pi
+Show that for any fermion $$c$$, $$c^\dagger c c^\dagger = c^\dagger$$. Hence show that $$c^\dagger = - \exp(i\pi
 c^\dagger c) c^\dagger$$.
 
 
@@ -103,5 +106,5 @@ commuting operators $$A_n$$, each of which have $$m_i$$ distinct eigenvalues $$\
    $$\ket{\lambda_i}$$ run over all eigenvectors of $$A_i$$, is a basis for $$\mathcal{H}$$.
 3. If $$H = \sum_{i=1}^n \epsilon_i A_i, A_i$$ positive semidifinite and $$\epsilon_i \ge 0$$, then
    the lowest energy state corresponds to a choosing the minimum eigenvalues of all the $$A_i$$'s.
-4. Take two hermitian linear operators $$A,B$$ on $$\mathcal{H}$$. Show that there exists a basis of
-   $$\mahthcal{H}$$ of common eigenvectors of $A,B$ if and only if $A,B$ commute.
+4. Take two diagonalisable linear operators $$A,B$$ on (finite dimensional) $$\mathcal{H}$$. Show that $$A,B$$ can be simultaneously diagonalised (i.e. there exists a common eigenbasis)
+if and only if $$A,B$$ commute.

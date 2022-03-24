@@ -175,78 +175,92 @@ function init() {
 
 
     // DIAMOND LATTICE
-
-
-
-
-    for (let i=0; i<Nx; i++){
-		unitcells.push([]);
-		for (let j=0; j<Ny; j++){
-			unitcells[i].push([])
-	    	for (let k=0; k<Nz; k++){
-        	        let cell = {
-				'Dy':[],
-				'Ti':[],
-				'pyro_Dy':[],
-				'pyro_Ti':[]
-			}
-		    for (key of ['Dy','Ti']){
-				    for (xyz of fcc_coords[key]) {
-							// quick and dirty; horrible style, but it does the job
-						x = i*direction.Lx + xyz[0];
-						y = j*direction.Ly + xyz[1];
-						z = k*direction.Lz + xyz[2];
-
-						// diamond A sublattice
-						let sphere = new THREE.Mesh(shapesA[key], materialsA[key]);
-						sphere.position.x = x;
-						sphere.position.y = y;
-						sphere.position.z = z;
-						scene.add(sphere);
-						cell[key].push(sphere);
-
-						// the B sublattice
-						sphere = new THREE.Mesh(shapesB[key], materialsB[key]);
-						sphere.position.x = x + direction.diamond[1][0];
-						sphere.position.y = y + direction.diamond[1][1];
-						sphere.position.z = z + direction.diamond[1][2];
-						scene.add(sphere);
-						cell[key].push(sphere);
-
-
-						// Pyrochlore sites are indexed off the A sublattice
-						
-						for (let subl=0; subl<4; subl++){
-								let pyr = direction.pyro[subl];
-
-								// pyr is the vector describing the orientation of the plaquette
-								// from the A sublattice
-								let xp = x + pyr[0];
-								let yp = y + pyr[1];
-								let zp = z + pyr[2];
-
-
-
-								sphere = new THREE.Mesh(shapes_pyro[key], materials_pyro[key]);
-								sphere.position.x = xp;
-								sphere.position.y = yp; 
-								sphere.position.z = zp; 
-								scene.add(sphere);
-								cell['pyro_'+key].push(sphere);
-
-						}
-					}
-		    }
-
-
-	    	   unitcells[i][j].push(cell);
-	    	}
-		}
-    }
-
+	construct_qsi();
 
 };
 
+
+// Build the arrays from qsi.cc
+let qsi = {
+		m_spin: [], // all spins
+        m_plaq: [], // all plaquettes
+		m_tera: [], // all tetrahedra
+		m_ptetra: [] // all dual tetrahedra
+}
+
+
+function spin_at(pos){
+	// make a copy so we don't do anything weird and nonlocal
+	pos = pos.slice()
+	let sl = -1;
+	for (let i=0; i<4; i++) {
+		if (pos.every((xj,j) => (xj - direction.pyro[i][j]) %4 == 0 )){
+			sl = i;
+			break;
+		}
+	}
+	if (sl < 0) throw "Invalid sublattice";
+	pos.map( (pos,i) => pos - direction.pyro[sl][i]);
+
+	let inc = -1;
+	for (let i=0; i<4; i++) {
+			if (pos.every((xj,j) => (xj - direction.fcc_Dy[i][j]) %8 == 0 )){
+					inc = i;
+					break;
+			}
+	}
+	if (inc < 0) throw "Invalid FCC reference";
+	pos.map( (pos,i) => pos - direction.fcc_Dy[inc][i]);
+
+	let x = mod(pos[0]/8, Nx);
+	let y = mod(pos[1]/8, Ny);
+	let z = mod(pos[2]/8, Nz);
+	let cell = (x*Ny+y)*Nz+z;
+
+
+	return qsi.m_spin[16*cell+4*inc+sl];
+}
+
+function construct_qsi(){
+	for (let i=0; i<Nx; i++){
+		for (let j=0; j<Ny; j++){
+			for (let k=0; k<Nz; k++){
+				for (let fcc=0; fcc<4; fcc++) {
+				    for (let ssl=0; ssl<4; ssl++){
+						spin = unitcells[i][j][k]['pyro_Dy'][fcc*4+ssl]
+						// Monkey Patch 
+						spin.subl = ssl;
+						spin.plaqs = []
+						qsi.m_plaq.push(spin)
+				    }
+				    qsi.m_ptetra.push(unitcells[i][j][k]['Dy'][2*fcc])
+				    qsi.m_ptetra.push(unitcells[i][j][k]['Dy'][2*fcc+1])
+				}
+				for (let fcc=0; fcc<4; fcc++) {
+				    for (let psl=0; psl<4; psl++){
+						plaq = unitcells[i][j][k]['pyro_Ti'][fcc*4+psl]
+						// Monkey Patch 
+						plaq.subl = psl;
+						qsi.m_plaq.push(plaq)
+				    } 
+				    qsi.m_ptetra.push(unitcells[i][j][k]['Ti'][2*fcc])
+				    qsi.m_ptetra.push(unitcells[i][j][k]['Ti'][2*fcc+1])
+				}
+
+				for (let p of qsi.m_plaq) {
+					for (let j = 0; j < 6; ++j) {
+						let r = [];
+						r[0] = p.position.x + direction.plaqt[p.subl][j][0];
+						r[1] = p.position.y + direction.plaqt[p.subl][j][1];
+						r[2] = p.position.z + direction.plaqt[p.subl][j][2];
+						s = spin_at(r);
+						s.plaqs.push(p);
+					}
+				}
+			}
+		}
+	}
+}
 
 
 // Recursive function to render the scene
@@ -381,6 +395,8 @@ function onHexToggle(isdual) {
 	}
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // Interactivity
 document.getElementById('Dy_slider').oninput = function() {
 	update_sizeof('Dy',this.valueAsNumber/100);
@@ -410,7 +426,6 @@ document.getElementById('Ti_checkbox').onclick = ()=>onShapeToggle('Ti')
 document.getElementById('pyro_Dy_checkbox').onclick = ()=>onHexToggle('Dy')
 
 document.getElementById('pyro_Ti_checkbox').onclick = ()=>onHexToggle('Ti')
-
 
 
 // Start the program
