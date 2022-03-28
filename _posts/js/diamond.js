@@ -79,9 +79,9 @@ const fcc_coords = {'Dy': direction.fcc_Dy, 'Ti': direction.fcc_Ti};
 let scene, camera, renderer, controls, clickMouse, moveMouse, raycaster;
 
 // Parameters for the lattice
-let Nx = 2;
-let Ny = 2;
-let Nz = 2;
+let Nx = 4;
+let Ny = 4;
+let Nz = 4;
 
 let unitcells = []
 
@@ -102,7 +102,7 @@ let materialsB = {
 
 let materials_pyro = {
 		'Dy':  {color: 0x040404, flatShading: false, transparent: true},
-		'Ti':  {color: 0x888888, flatShading: false, transparent: true} 
+		'Ti':  {color: 0x888888, flatShading: false, transparent: true, side: THREE.DoubleSide} 
 }
 
 
@@ -170,12 +170,16 @@ let qsi = {
 		m_ptetra: [] // all dual tetrahedra
 }
 
+function mod(n, m) {
+	return ((n % m) + m) % m;
+}
+  
 
 function spin_at(pos){
 	// make a copy so we don't do anything weird and nonlocal
 	pos = pos.slice()
 
-	let alldiv = (v, b) => v[0]%b ===0 && v[1]%b === 0 && v[2]%b ===0;
+	let alldiv = (v, b) => (v[0]%b ===0 && v[1]%b === 0 && v[2]%b ===0);
 
 	let sl = -1;
 	for (let i=0; i<4; i++) {
@@ -189,13 +193,13 @@ function spin_at(pos){
 
 	let inc = -1;
 	for (let i=0; i<4; i++) {
-		if (alldiv(v3_sub(pos, direction.fcc_Dy[i]), 8) == 0){
+		if (alldiv(v3_sub(pos, direction.fcc_Dy[i]), 8)){
 			inc = i;
 			break;
 		}
 	}
 	if (inc < 0) throw "Invalid FCC reference";
-	pos = v3_sub(pos, fcc_Dy[inc]);
+	pos = v3_sub(pos, direction.fcc_Dy[inc]);
 
 	let x = mod(pos[0]/8, Nx);
 	let y = mod(pos[1]/8, Ny);
@@ -214,7 +218,7 @@ tetraB_shape.applyMatrix4(flip);
 
 function construct_hexagon_shape(subl){
 	// the hexagon
-	hex = new THREE.BufferGeometry();
+	let hex = new THREE.BufferGeometry();
 	let positions = [];
 	let normals = [];
 	let uvs = [];
@@ -326,22 +330,24 @@ function construct_qsi(){
 					qsi.m_ptetra.push(tetraA);
 				    qsi.m_ptetra.push(tetraB);
 				}
-				
-
-				// REGISTRATION: spins and plaquettes (ignore the tetrahedra for now)
-				for (let p of qsi.m_plaq) {
-					for (let j = 0; j < 6; ++j) {
-						let r = [];
-						r[0] = p.position.x + direction.plaqt[p.subl][j][0];
-						r[1] = p.position.y + direction.plaqt[p.subl][j][1];
-						r[2] = p.position.z + direction.plaqt[p.subl][j][2];
-						// s = spin_at(r);
-						// s.plaqs.push(p);
-					}
-				}
 			}
 		}
 	}
+	
+	// REGISTRATION: spins and plaquettes (ignore the tetrahedra for now)
+	for (let p of qsi.m_plaq) {
+		for (let j = 0; j < 6; ++j) {
+			let r = [];
+			r[0] = p.position.x + direction.plaqt[p.subl][j][0];
+			r[1] = p.position.y + direction.plaqt[p.subl][j][1];
+			r[2] = p.position.z + direction.plaqt[p.subl][j][2];
+			r = r.map(xi => Math.round(xi));
+			s = spin_at(r);
+			s.plaqs.push(p);
+			p.spins.push(s);
+		}
+	}
+			
 }
 
 
@@ -355,12 +361,20 @@ const pointer = new THREE.Vector2();
 
 
 function highlight_obj() {
+	if (INTERSECTED['material'] == undefined || INTERSECTED['material']['emissive'] == undefined){
+		return;
+	}
 	INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
 	INTERSECTED.material.emissive.setHex( 0xff0000 );
 	INTERSECTED.material.transparent=false;
 }
 
 function unhighlight_obj() {
+	if (INTERSECTED.material == undefined 
+	|| INTERSECTED.material.emissive == undefined
+	|| INTERSECTED.currentHex == undefined){
+		return;
+	}
 	INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
 	INTERSECTED.material.transparent=true;
 }
@@ -371,23 +385,31 @@ function render() {
 	
 	raycaster.setFromCamera( pointer, camera );
 
-		const intersects = raycaster.intersectObjects( scene.children, false );
-		if ( intersects.length > 0 ) {
-			
-			if ( intersects.length>0 ) {
-				if ( INTERSECTED != intersects[ 0 ].object && intersects[ 0 ].object.visible) {
-					if ( INTERSECTED ) unhighlight_obj();
-
-					INTERSECTED = intersects[ 0 ].object;
-					highlight_obj();
-				}
-			}
-
-		} else {
-
-			if ( INTERSECTED ) unhighlight_obj();
-			INTERSECTED = null;
+	const intersects = raycaster.intersectObjects( scene.children, false );
+	let interactive = document.getElementById('plaq_checkbox').checked 
+	|| document.getElementById('delete_checkbox').checked;
+	if  (document.getElementById('lightsaber_checkbox').checked) {
+		for (let i=0; i<intersects.length; i++) {
+			scene.remove(intersects[i].object);
 		}
+	} else if ( intersects.length > 0 && interactive ) {
+		for (let i=0; i<intersects.length; i++) {
+			if (INTERSECTED == intersects[i]) break;
+			if ( intersects[ i ].object.visible) {
+				if ( INTERSECTED ) unhighlight_obj();
+
+				INTERSECTED = intersects[ i ].object;
+				highlight_obj();
+				break;
+			}
+		}
+		
+
+	} else {
+
+		if ( INTERSECTED ) unhighlight_obj();
+		INTERSECTED = null;
+	}
 	renderer.render( scene, camera );
 }
 
@@ -408,19 +430,6 @@ function onWindowResize() {
     renderer.setSize(w, h);
 }
 
-
-// function getClicked3DPoint(evt) {
-//     evt.preventDefault();
-
-//     mousePosition.x = ((evt.clientX - canvasPosition.left) / canvas.width) * 2 - 1;
-//     mousePosition.y = -((evt.clientY - canvasPosition.top) / canvas.height) * 2 + 1;
-
-//     rayCaster.setFromCamera(mousePosition, camera);
-//     var intersects = rayCaster.intersectObjects(scene.getObjectByName('MyObj_s').children, true);
-
-//     if (intersects.length > 0)
-//         return intersects[0].point;
-// };
 let canvas;
 
 // raycasting
@@ -429,10 +438,6 @@ function onPointerMove( event ) {
 	pointer.x = ( (event.clientX - rect.left) / rect.width ) * 2 - 1;
 	pointer.y = - ( (event.clientY-rect.top) / rect.height ) * 2 + 1;
 }
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Interactivity Attachments
 
 function update_materials(which, op) {
 	qsi[which].forEach((t)=>{
@@ -444,6 +449,47 @@ function update_materials(which, op) {
 		}
 	});
 }
+
+
+
+function handleClick(e) {
+	if (!INTERSECTED) return;
+	let obj = INTERSECTED; // in case the user moves the mouse
+
+	if (document.getElementById('plaq_checkbox').checked && e.which === 3) {
+		
+		if (obj['spins'] != undefined){
+			// Plaquette
+			obj.spins.forEach( (xi,i) =>{
+				let linegeo = new THREE.BufferGeometry().setFromPoints([
+					new THREE.Vector3(...obj.position),
+					new THREE.Vector3(...xi.position)]);
+				let line = new THREE.Line(linegeo, lineMaterials[i]);
+				scene.add(line);
+			});
+		}
+		
+	}
+
+	if (document.getElementById('delete_checkbox').checked && e.which === 1){
+		scene.remove(obj);
+	}
+	// console.log(INTERSECTED);
+
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Interactivity Attachments
+
+
+
+
+colors = [0xff0000, 0xFFDF00, 0x04ff00, 0x00ffff,0x0004ff, 0xF702FD];
+
+const lineMaterials = [];
+colors.forEach( 
+	(c)=>{lineMaterials.push(new THREE.LineBasicMaterial( { color: c} ))
+});
 
 // Start the program
 document.addEventListener("DOMContentLoaded",function () {
@@ -462,8 +508,9 @@ document.addEventListener("DOMContentLoaded",function () {
 		slider.oninput();
 	}
 
-	canvas= document.getElementById('3D_TARGET').children[0];
+	canvas= mum.children[0];
 	canvas.addEventListener('mousemove', onPointerMove);
+	canvas.addEventListener('mousedown', handleClick);
 
 });
 
