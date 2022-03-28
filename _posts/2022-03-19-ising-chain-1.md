@@ -115,12 +115,17 @@ commuting operators $$A_n$$, each of which have $$m_i$$ distinct eigenvalues $$\
 1. $$\operatorname{dim}(\mathcal{H}) = \prod_{i=1}^n m_i$$
 2. The set $$ \{ \ket{\lambda_1} \otimes ... \otimes \ket{\lambda_n} \}$$, where
    $$\ket{\lambda_i}$$ run over all eigenvectors of $$A_i$$, is a basis for $$\mathcal{H}$$.
-3. If $$H = \sum_{i=1}^n \epsilon_i A_i, A_i$$ positive semidifinite and $$\epsilon_i \ge 0$$, then
+3. If $$H = \sum_{i=1}^n \epsilon_i A_i$$, where all of the $$A_i$$ are positive semidifinite and $$\epsilon_i \ge 0$$, then
    the lowest energy state corresponds to a choosing the minimum eigenvalues of all the $$A_i$$'s.
 4. Take two diagonalisable linear operators $$A,B$$ on (finite dimensional) $$\mathcal{H}$$. Show that $$A,B$$ can be simultaneously diagonalised (i.e. there exists a common eigenbasis)
 if and only if $$A,B$$ commute.
 
 ## [Seminar 2: The Fourier Transform](/)
+
+**Rotations are a SU(2) automorphism**
+Show that for any rotation matrix $$R \in SO(3)$$ and $$SU(2)$$ gnerators $$\sigma^i$$ (i.e. operators satisfying $$[\sigma^i, \sigma^j] = 2i\epsilon^{ij}_k \sigma^k$$),
+
+$$[R^i_a \sigma^a, R^j_b \sigma^b] = 2i \epsilon^{ij}_k R^k_c \sigma^c$$
 
 
 **Fourier Transforms**
@@ -146,7 +151,7 @@ Let $$\Psi_k = \left( c_{k1}\ c_{k2},\, ...\, c_{kN},\ c^\dagger_{-k1},\,...,\,c
 \right)^T$$, i.e. regarded as a column vector.
 Show that the $$c$$'s are fermions (+) / bosons (-) if and only if
 
-$$ [\Psi_k^\alpham, \Psi_{k'}^\beta]_\pm = \delta_{kk'} 
+$$ [\Psi_k^\alpha, \Psi_{k'}^\beta]_\pm = \delta_{kk'} 
 \begin{pmatrix}
 1& & & & \\ 
  &\ddots& & & \\
