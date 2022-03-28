@@ -74,10 +74,21 @@ Define the string operator $$K_j = \prof_{l=0}^{j-1} \sigma_j^z$$. The Jordan-Wi
 defined as
 $$c_j = K_j S^+ _ j, c _ j^\dagger = (c _ j)^\dagger$$.
 
-These operators obey the correct anticommutation relations and have the correct dimensionality to
-potentially form a complete set of commuting observables.
+These operators obey the correct anticommutation relations and have the correct dimensionality to 
+form a complete set of commuting observables.
 
-# Video Recordings
+## The Fourier Transform
+
+Given some collection of operators $$c_r$$ (fermions, bosons, spins, or something else) over a $d$
+dimensonal torus (With $L$ sites in all directions), it is
+conventional to define a maximally nonlocal unitary roatioan of the Hilbert space using
+
+$$c_k = L^{-d/2} \sum_j e^{-i k \cdot r } c_r$$
+
+
+
+
+# Video Recordings and Exercises
 
 ## [Seminar 1: Introduction to fields](https://www.youtube.com/watch?v=uvkWrG-8gVU)
 
@@ -108,3 +119,42 @@ commuting operators $$A_n$$, each of which have $$m_i$$ distinct eigenvalues $$\
    the lowest energy state corresponds to a choosing the minimum eigenvalues of all the $$A_i$$'s.
 4. Take two diagonalisable linear operators $$A,B$$ on (finite dimensional) $$\mathcal{H}$$. Show that $$A,B$$ can be simultaneously diagonalised (i.e. there exists a common eigenbasis)
 if and only if $$A,B$$ commute.
+
+## [Seminar 2: The Fourier Transform](/)
+
+
+**Fourier Transforms**
+
+1. Show that $$c_k$$ satisfies the canonical commutator $$[c_k, c_{k'}^\dagger]_\pm = \delta_{kk'}$$ if
+and only if $$\frac{1}{L^d} \sum_r e^{-i(k-k')r} = \delta_{kk'} $$. Show that this is the case if
+$$k = k_0 + \frac{2\pi n}{L}$$ for $$n\in \mathbb{Z}^d$$.
+2. Verify that, in 1D, the boundary conditions $$c_{L+1} = \pm c_1$$ fix the value of $$k_0$$ to
+   $$0$$ in the case of PBC and $$\pi/L$$ in the case of ABC.
+
+
+**Filling in the gaps**
+
+1. Determine what $$\mathcal{K}_p$$ looks like in the case of an odd-length chain.
+2. Verify the following identites:
+
+$$ \sum_{j=1^L}c_j^\dagger c_{j+1} = \sum_{k} e^{ik} c_k^\dagger c_k $$
+
+$$ \sum_{j=1^L}c_j^\dagger c_{j+1}^\dagger = e^{2i\phi}\sum_{k} e^{ik} c_k^\dagger c_{-k}^\dagger $$
+
+**Commutation Station**
+Let $$\Psi_k = \left( c_{k1}\ c_{k2},\, ...\, c_{kN},\ c^\dagger_{-k1},\,...,\,c^\dagger_{-kN}
+\right)^T$$, i.e. regarded as a column vector.
+Show that the $$c$$'s are fermions (+) / bosons (-) if and only if
+
+$$ [\Psi_k^\alpham, \Psi_{k'}^\beta]_\pm = \delta_{kk'} 
+\begin{pmatrix}
+1& & & & \\ 
+ &\ddots& & & \\
+ & & 1 & & \\
+ & & & \pm 1 & \\
+ & & & & \ddots\\
+ & & & & & \pm 1
+\end{pmatrix}^{\alpha \beta}
+$$
+
+
