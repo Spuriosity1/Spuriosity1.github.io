@@ -79,14 +79,28 @@ form a complete set of commuting observables.
 
 ## The Fourier Transform
 
-Given some collection of operators $$c_r$$ (fermions, bosons, spins, or something else) over a $d$
-dimensonal torus (With $L$ sites in all directions), it is
+Given some collection of operators $$c_r$$ (fermions, bosons, spins, or something else) over a $$d$$
+dimensonal torus (With $$L$$ sites in all directions), it is
 conventional to define a maximally nonlocal unitary roatioan of the Hilbert space using
 
 $$c_k = L^{-d/2} \sum_j e^{-i k \cdot r } c_r$$
 
 
+# Definitions
 
+The transverse-field Ising Hamiltonian _with open boundary conditions_ is given by
+
+$$H_{OBC} = -J \sum_{j=1}^{L-1} \sigma_j^- \sigma_{j+1}^+ + \kappa \sigma_j^- \sigma_{j+1}^- + h.c.
+- h \sum_{j=1}^L \sigma_j^z$$
+
+$$ = -J \sum_{j=1}^{L-1} c_j^\dagger c_{j+1} + \kappa c_j^\dagger c_{j+1}^\dagger + h.c.
++ h \sum_{j=1}^L (2c_j^\dagger c_j -1 )$$
+
+With periodic boundary conditions, end up with
+
+$$H_{PBC} = H_{OBC} -J (\sigma_L^- \sigma_{1}^+ + \kappa \sigma_L^- \sigma_{1}^- + h.c.)$$
+
+$$ = H_{OBC} -J (-)^{\hat{N}+1}(c_L^\dagger c_{1}^+ + \kappa c_L^\dagger c_{1}^\dagger + h.c.)$$
 
 # Video Recordings and Exercises
 
