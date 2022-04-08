@@ -250,7 +250,7 @@ using the Cauchy-Schwartz inequality and appropriate symmetries. This proves the
 for the case $n=0$, i.e. the zero temperature limit.
 
 
-### Finite temperature
+### [WIP] Finite temperature
 
 
 **Exercise:** show that the finite temperature case of the theorem is equivalent to showing that
@@ -269,8 +269,8 @@ It follows that
 $$ \sum_n e^{-\beta E_n(A,B)} \le \text{min} \left\{ \sum_n e^{-\beta \bra{A_n} H[A,\overline{A}]\ket{A_n} }, \sum_n
 e^{-\beta \bra{B_n} H[\overline{B}, B] \ket{B_n}} \right\} $$
 
-Finally, we can exploit $$\sum_n \exp\left(-\beta \bra{A_n}H[A,\overline{A}] \ket{A_n} \right) =
-\sum_n \bra{A_n} \exp\left(-\beta H[A,\overline{A}] \right) \ket{A_n} = \text{tr} \exp\left(-\beta H[A,\overline{A}] \right)$$, which is basis invariant. A rotation into the true eigenspace of $H[A,\bar{A}]$ proves the result we need.
+[missing]
+
 
 It then follows straightforwardly that the energy can always be decreased by letting $B = \bar{A}$,
 so this configuration is (at least one) ground state.
