@@ -310,3 +310,12 @@ td.hl {
 figure.highlight {
     padding: .1em .6em;
 }
+
+
+span.spoiler {
+    color: gray;
+    background-color: gray;
+    &:hover {
+        background-color:inherit;
+    }
+}
