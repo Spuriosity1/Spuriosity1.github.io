@@ -335,7 +335,7 @@ paper, but I find the sketch more convincing:
 ![The fluxes start coming and they don't stop coming](../assets/fluxloop.png)
 
 
-To see the cancellation, all we really need to observe is that $t_{12}e^{i\phi_{12}} t_{12}e^{i\phi_{12}}
+To see the cancellation, all we need to notice it that $\Phi$ consists of $n-1$ products of $t_{12}e^{i\phi_{12}} t_{P2 P1}e^{i\phi_{P2P1}} = -t_[12}^2$.
 
 It's immediate from this that $\Phi(\gamma) = (n - 1)\pi\ (\text{mod}\ 2\pi) $, which is exactly the
 result we set out to prove. $\square$
