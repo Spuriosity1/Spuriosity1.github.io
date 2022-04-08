@@ -21,7 +21,7 @@ There is still absolutely no way to top Lieb's original graphic design sense tho
 reuse his title art:
 ![The Flux Phase Theorem](../assets/lieb_flux_transparent.png)
 
-## Definitions
+# Definitions
 
 We consider the model of spinless fermions hopping around on a lattice $$\Lambda$$. (Spin will be
 added later.)
@@ -29,13 +29,13 @@ added later.)
 $$H = \sum_{x,y \in \Lambda} t_{xy}e^{i\phi_{xy}} c_x^\dagger c_y$$
 
 The $$t, \phi$$ satisfy hermiticity relationships $$t_{xy} = t_{xy}, \phi_{xy} = - \phi_{yx}$$. It will
-be conventient to refer to the $$\Lambda$$ and $$(t,\phi)$$ interchangeably as _the model_, standing in for
+be convenient to refer to the $$\Lambda$$ and $$(t,\phi)$$ interchangeably as _the model_, standing in for
 the equivalent model interpretations as a directed complex valued graph or a hermitian matrix.
 Physically, $$\phi$$ is a U(1) gauge field / gauge connection. You can view them either as a set of
 numbers over which to optimise, or as the eigenvalues of some continuous U(1)-valued operator. In
-the second interpreation, we find the gauge sector that minimises the Hamiltonian's energy.
+the second interpretation, we find the gauge sector that minimises the Hamiltonian's energy.
 
-**Definiton 1**: Let $$\gamma$$ be an oriented closed loop in $$\Lambda$$. The _flux_ of $$\gamma$$ is defined as
+**Definition 1**: Let $$\gamma$$ be an oriented closed loop in $$\Lambda$$. The _flux_ of $$\gamma$$ is defined as
 
 $$\Phi[\gamma] = \sum_{\langle xy\rangle \in \gamma} \phi_{xy}$$
 
@@ -56,7 +56,21 @@ such that $$P(x) \neq x$$ and $$ t_{x,y}= t_{Px, Py} $$.
 If the graph is embedded into $$\mathbb{R}^D$$, then this can be thought of as a mirror plane that
 cuts bonds but does not slice through any sites. 
 
-## Statement of the Theorem
+
+## An interesting fact about the fluxes
+
+This deserves its own section because of its importance in the Kitaev model. 
+
+We can define $\Phi[\gamma]$ more generally as a string operator
+
+$$\Phi[\gamma] = \prod_{\langle ij\rangle \in \gamma} t_{ij}e^{i\phi_{ij}}c^\dagger_i c_j$$
+
+**Exercise**: Show that $[c^{\dagger}_jc_j, \Phi[\gamma]]$ is only nonzero when $j$ is at the
+beginning or end of the chain.  
+Convince yourself that this proves that the loops have simultaneous eigenstates with the Fermion basis, and that $\Phi[\gamma]$ represents a fermion transport operator.
+
+
+# Statement of the Theorem
 Let the $$t_ij$$ be structured such that
 - (A1) $$\Lambda$$ is bipartite $$\Leftrightarrow$$ all circuits on the graph have even length
 - (A2) Each closed loop $$\gamma$$ defined on the links of $$\Lambda$$ possesses a site avoiding
@@ -77,6 +91,9 @@ Some references only explicitly deal with the $$T=0^+$$ (i.e. $$\beta=1/T \to \i
 
 $$F = -T \ln(\text{tr} \exp(-\beta H)) = - T \ln(\sum_i e^{-\beta E_i}) \sim -T (-\beta E_0) = E_0$$
 where $E_0$ is the ground state energy. 
+
+
+# Preliminaries
 
 
 ## Complex conjugation and antiunitary operators
@@ -127,8 +144,6 @@ This really shows up the complacency that Dirac notation breeds - it's tempting 
 left hand bra, but this is only correct for $\mathbb{C}$-_linear_ operators!
 
 
-# Prelimnaries
-
 There's not much elegance in the proof. Most of the work is actually in
 proving an annoying technical result.
 
@@ -175,7 +190,7 @@ $$ = \sum_{\alpha} \lambda_\alpha^2 \left[ \bra{\phi_\alpha} A \ket{\phi_\alpha}
 C_j \ket{\phi_\beta} \bra{\psi_\alpha} C_j \ket{\psi_\beta} $$
 
 
-### Zero temperatue case
+### Zero temperature case
 
 Let's start with the case $n=0$.
 
@@ -262,29 +277,18 @@ so this configuration is (at least one) ground state.
 
 $$\square$$
 
-# An interesting fact about the fluxes
-
-This deserves its own sectione because of its importance in the Kitaev model. 
-
-We can define $\Phi[\gamma]$ more genrally as a string operator
-
-$$\Phi[\gamma] = \prod_{\langle ij\rangle \in \gamma} t_{ij}e^{i\phi_{ij}}c^\dagger_i c_j$$
-
-**Exercise**: Show that $[c^{\dagger}_jc_j, \Phi[\gamma]]$ is only nonzero when $j$ is at the
-beginning or end of the chain.  
-Convince yourself that this proves that the loops have simultaneous eigenstates with the Fermion basis, and that $\Phi[\gamma]$ represents a fermion transport operator.
 
 
 # Proving the flux phase theorem
 
-There are three steps involvedd in transforming $H$ into the form of the annoying technical result
+There are three steps involved in transforming $H$ into the form of the annoying technical result
 (ATR). 
 1. Jordan-Wigner like transformation
 2. Gauge transformation
 3. Particle/hole symmetry
 
 Consider a loop $\gamma$, with associated site avoiding mirror plane $P$. By assumption, $P$ divides the lattice
-$\lambda$ into two groups with a one to one correspondence netween them, which we'll call $\Lambda_L,\Lambda_R$ for
+$\lambda$ into two groups with a one to one correspondence between them, which we'll call $\Lambda_L,\Lambda_R$ for
 the 'left' and 'right' sites. 
 
 The JW like transform is
