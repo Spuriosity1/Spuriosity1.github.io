@@ -339,3 +339,15 @@ To see the cancellation, all we need to notice it that $\Phi$ consists of $n-1$ 
 
 It's immediate from this that $\Phi(\gamma) = (n - 1)\pi\ (\text{mod}\ 2\pi) $, which is exactly the
 result we set out to prove. $\square$
+
+
+##  Concluding remarks
+
+There are a number of important generalisations that are possible that introduce spin indices and
+additional Hubbard type fermion interactions, but the proof presented here is complete on its own
+and captures the essence of the result. The generalisation / restatement that is relevant for the
+Kitaev model is repeating the derivation with Majorana fermions, which ultimately boils down to some
+slightly different phase massaging but the same result overall.
+
+
+
