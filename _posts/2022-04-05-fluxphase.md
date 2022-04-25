@@ -112,7 +112,7 @@ In fact, it isn't $$\mathbb{C}$$-linear. Rearranging shows that $T^{-1} (-i) T  
 $T$ to preserve norms, which implies $\braket{T\psi \vert T\psi} = \braket{\psi \vert \psi}$ for all
 basis elements. It can be shown from the fact that $[T,H]=0$ and the definition that $T$ is $\mathbb{R}$-linear.
 
-This implies that $T$ is _antiunitary_: and $\mathbb{R}$-linear operator where
+This implies that $T$ is _antiunitary_: an $\mathbb{R}$-linear operator where
 $$\braket{T\psi \vert T\phi} = \overline{\braket{\psi \vert \phi}}$$. $\mathbb{R}$-linearity implies
 that $T(\alpha\ket{\psi} + \beta\ket{\phi}) = \overline{\alpha} \ket{\psi} + \overline{\beta}
 \ket{\phi}$.
@@ -128,7 +128,10 @@ antilinear operators.
 
 $KT$ and $TK$ are unitary, since $\braket{TK\phi \vert TK \psi} = \overline{\braket{K \psi \vert K \phi}} =
 \braket{\phi \vert \psi}$, which proves the lemma since $T KK = T = UK$ for some unitary operator
-$U$. $U^{1/2}$ provides the necessary basis change. 
+$U$. Then, letting $\ket{m} = U \ket{n}$, $T\ket{m} = T TK\ket{n} = \ket{n}$.
+In fact, we're being unnecessarily abstract: $U$ is diagonal (in the $\mathbb{C}$ basis), i.e. it's
+a trivial phase rotation of the original basis.
+
 
 **Corrolary** A particular basis $\{ \ket{e_i} \}$ has a unique associated antilinear operator $K$
 that leaves every basis vector invariant.
@@ -156,20 +159,20 @@ the 'real basis' <span class=spoiler>of Beverly Hills</span>.
 
 Define:
  - The complex conjugation operator $K$ to be the unique antiunitary operator that leaves this basis invariant.
- - $$H[A,B]: \mathcal{H}^{\otimes 2} \to \mathcal{H}^{\otimes 2}$$ using $$H[A,B] = A\otimes 1 + 1 \otimes B + \sum_j C_j \otimes C_j$$. 
+ - $$H[A,B]: \mathcal{H}^{\otimes 2} \to \mathcal{H}^{\otimes 2}$$ using $$H[A,B] = A\otimes 1 + 1 \otimes B - \sum_j C_j \otimes C_j$$. 
  - $E_n(M)$ to be the $n$th eigenvalue of a hermitian matrix, ordered smallest to largest.
  - Free energy of a Hamiltonian to be $$F(H) = -T \ln(\text{tr} e^{-\beta H}) = -T \ln\left( \sum_n
    e^{-\beta E_n(H)} \right)$$
 
 The theorem then states that
- - **Zero temperature** The lowest eigenvalue of this operator, $$E_0 \circ H[A,B] \le \text{min} \{ E_0 \circ H[A,\overline{A}], E_0\circ H[\overline{B},
+ - **Zero temperature** The lowest eigenvalue of this operator, $$E_0 \circ H[A,B] \ge \text{min} \{ E_0 \circ H[A,\overline{A}], E_0\circ H[\overline{B},
 B]\}$$.
- - **Finite temperature** The free energy of this Hamiltonian does the same thing, $$F \circ H[A,B] \le \text{min} \{ F \circ H[A,\overline{A}], F\circ H[\overline{B},
+ - **Finite temperature** The free energy of this Hamiltonian does the same thing, $$F \circ H[A,B] \ge \text{min} \{ F \circ H[A,\overline{A}], F\circ H[\overline{B},
 B]\}$$.
 
 
 $\overline{A}$ is defined by $K A K$, corresponding to the complex conjugate in its matrix
-representation with respect to the real basis. We'll write $E_n(A,B) as shorthand for $E_n \circ
+representation with respect to the real basis. We'll write $E_n(A,B)$ as shorthand for $E_n \circ
 T[A,B]$, and use the same shorthand for the free energy.
 
 Let $\ket{\Omega_n}$ be the $n$th eigenstate of $H[A,B]$. With respect to the real basis, it may be
@@ -197,7 +200,7 @@ Let's start with the case $n=0$.
 Define the (normalised) ground state Ansätze 
 
 $$\ket{A} = \sum_\alpha \lambda_\alpha \ket{\phi_\alpha} \otimes K\ket{\phi_\alpha}, \hspace{2em}
-\ket{B} = \sum_\alpha \lambda_\alpha \ket{\psi_\alpha} \otimes K\ket{\psi_\alpha}$$
+\ket{B} = \sum_\alpha \lambda_\alpha K\ket{\psi_\alpha} \otimes \ket{\psi_\alpha}$$
 
 Our strategy will be to show that 
 
@@ -335,19 +338,57 @@ paper, but I find the sketch more convincing:
 ![The fluxes start coming and they don't stop coming](../assets/fluxloop.png)
 
 
-To see the cancellation, all we need to notice it that $\Phi$ consists of $n-1$ products of $t_{12}e^{i\phi_{12}} t_{P2 P1}e^{i\phi_{P2P1}} = -t_{12}^2$.
+To see the cancellation, all we need to notice it that $\Phi$ consists of $n-1$ products of $e^{i\phi_{12}} e^{i\phi_{P2P1}} = -1$.
 
 It's immediate from this that $\Phi(\gamma) = (n - 1)\pi\ (\text{mod}\ 2\pi) $, which is exactly the
 result we set out to prove. $\square$
 
 
-##  Concluding remarks
+# For Majorana Fermions (Is this right??)
+
+In fact, I think things are a lot simpler with Majoranas. Let the $c_j$ be Majoran fermions, and then get the deceptively innocent looking Hamiltonian
+
+$$ H = \sum_{ij} i t_{ij} e^{i\phi_{ij}} c_i c_j $$
+
+The $t_{ij}$ and $\phi_{ij}$ are defined as before. 
+
+We're actually overcounting the degrees of freedom here - due to Hemiticity, we have
+$$H = \sum_{\langle ij \rangle} it_{ij} (e^{i\phi_{ij}} - e^{i\phi_{ij}}) c_i c_j$$
+That turns into a $\sin \phi$, i.e. the only "phase" it can introduce is $\pi$.
+
+I claim that the Majorana version of the theorem only makes sense when you restrict to the case $\phi_{ij} = \pm \pi/2$.
+
+## Theorem statement
+
+Under the conditions (A1), (A2) from before, the optimal flux around a loop $\gamma$ is again $\pi$ if $\| \gamma \| \sim 0 \ \text{mod} 4$, 0 otherwise.
+
+\textit{Proof attempt}
+
+Again, take an arbitrary loop and cut the
+Hamiltonian into left, right and middle parts using the site-avoiding mirror:
+
+$$H = \sum_{\langle ij \rangle_L} t_{ij} u_{ij} c_i c_j  + \sum_{\langle ij \rangle_R} t_{ij} u_{ij} c_i c_j
++ \sum_{i \in L, j \in R} 2 t_{ij} u_{ij} c_i c_j 
+$$
+
+Now, $u_{ij} = \pm 1 = u_{ji}$ takes the place of the continuusly variable phases from before, and
+the $t_{ij}$ are constants. It should be obvious now that we can apply the ATR, and recover
+
+$ u_{i,j} = u_{Pi,Pj}$
+
+In terms of signs, that means you get an automatic factor of -1
+
+
+
+
+
+
+
+
+
+#  Concluding remarks
 
 There are a number of important generalisations that are possible that introduce spin indices and
 additional Hubbard type fermion interactions, but the proof presented here is complete on its own
-and captures the essence of the result. The generalisation / restatement that is relevant for the
-Kitaev model is repeating the derivation with Majorana fermions, which ultimately boils down to some
-slightly different phase massaging but the same result overall.
-
-
+and captures the essence of the result. 
 

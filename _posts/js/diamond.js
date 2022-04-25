@@ -209,12 +209,36 @@ function spin_at(pos){
 	return qsi.m_spin[16*cell+4*inc+sl];
 }
 
+//////////////////////////// GEOMETRY
+
 const flip = new THREE.Matrix4();
 flip.makeRotationX(Math.PI/2);
 const sphere_shape = new THREE.SphereGeometry(0.2,32,32);
 const tetraA_shape = new THREE.TetrahedronGeometry(Math.sqrt(3));
 const tetraB_shape = new THREE.TetrahedronGeometry(Math.sqrt(3));
 tetraB_shape.applyMatrix4(flip);
+
+// Create the arow geometry
+//
+function construct_arrow_geometry(length, stem_radius=null, head_radius=null, head_len=null){
+	// defualts
+	if (stem_radius == null) {
+		stem_radius = length/10;
+	}
+	if (head_radius ==null) {
+		head_radius = 2*stem_radius;
+	}
+	if (head_len == null) {
+		head_len = 2*stem_radius;
+	}	
+	const points = [];
+	for (let xy of [[stem_radius, 0],[ stem_radius, length-head_len],[ head_radius, length-head_len],[0, length]]){
+		points.push(new THREE.Vector2( xy[0], xy[1] ));
+	}
+	return new THREE.LatheGeometry( points , 13 );
+}
+
+const arrow3d_shape = construct_arrow_geometry(1, 0.1, 0.2, 0.2);
 
 function construct_hexagon_shape(subl){
 	// the hexagon
@@ -336,6 +360,7 @@ function construct_qsi(){
 	
 	// REGISTRATION: spins and plaquettes (ignore the tetrahedra for now)
 	for (let p of qsi.m_plaq) {
+		p.spin_neighbour = []
 		for (let j = 0; j < 6; ++j) {
 			let r = [];
 			r[0] = p.position.x + direction.plaqt[p.subl][j][0];
@@ -345,6 +370,7 @@ function construct_qsi(){
 			s = spin_at(r);
 			s.plaqs.push(p);
 			p.spins.push(s);
+			p.spin_neighbour.push(new THREE.Vector3(...direction.plaqt[p.subl][j]))
 		}
 	}
 			
@@ -378,7 +404,6 @@ function unhighlight_obj() {
 	INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
 	INTERSECTED.material.transparent=true;
 }
-
 
 
 function render() {
@@ -458,14 +483,22 @@ function handleClick(e) {
 
 	if (document.getElementById('plaq_checkbox').checked && e.which === 3) {
 		
-		if (obj['spins'] != undefined){
-			// Plaquette
+		if (obj['spins'] != undefined && obj['spin_neighbour'] != undefined){
+			// Plaquette annotations
 			obj.spins.forEach( (xi,i) =>{
-				let linegeo = new THREE.BufferGeometry().setFromPoints([
+				/*let linegeo = new THREE.BufferGeometry().setFromPoints([
 					new THREE.Vector3(...obj.position),
 					new THREE.Vector3(...xi.position)]);
 				let line = new THREE.Line(linegeo, lineMaterials[i]);
 				scene.add(line);
+				*/
+				let arrow = new THREE.Mesh(arrow3d_shape, lineMaterials[i]);
+				arrow.position.set(...obj.position);
+				//let next = xi.position.clone().addScaledVector(arrow.position.clone(),-1).normalize();
+				//
+				let next = obj.spin_neighbour[i].normalize();
+				arrow.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), next);
+				scene.add(arrow);
 			});
 		}
 		
@@ -488,7 +521,7 @@ colors = [0xff0000, 0xFFDF00, 0x04ff00, 0x00ffff,0x0004ff, 0xF702FD];
 
 const lineMaterials = [];
 colors.forEach( 
-	(c)=>{lineMaterials.push(new THREE.LineBasicMaterial( { color: c} ))
+	(c)=>{lineMaterials.push(new THREE.MeshPhongMaterial( { color: c} ))
 });
 
 // Start the program
