@@ -161,7 +161,7 @@ Define:
  - The complex conjugation operator $K$ to be the unique antiunitary operator that leaves this basis invariant.
  - $$H[A,B]: \mathcal{H}^{\otimes 2} \to \mathcal{H}^{\otimes 2}$$ using $$H[A,B] = A\otimes 1 + 1 \otimes B - \sum_j C_j \otimes C_j$$. 
  - $E_n(M)$ to be the $n$th eigenvalue of a hermitian matrix, ordered smallest to largest.
- - Free energy of a Hamiltonian to be $$F(H) = -T \ln(\text{tr} e^{-\beta H}) = -T \ln\left( \sum_n
+ - Free energy of a Hamiltonian to be $$F(H) = - T \ln(\text{tr} e^{-\beta H}) = -T \ln\lefta( \sum_n
    e^{-\beta E_n(H)} \right)$$
 
 The theorem then states that
@@ -252,9 +252,12 @@ $$ = \sum_{j} \sum_{\alpha \beta} \frac{\lambda_\alpha \lambda_\beta}{2} \left[ 
 using the Cauchy-Schwartz inequality and appropriate symmetries. This proves the result we needed
 for the case $n=0$, i.e. the zero temperature limit.
 
+It then follows straightforwardly that the energy can always be decreased by letting $B = \bar{A}$,
+so this configuration is (at least one) ground state.
 
-### [WIP] Finite temperature
+$$\square$$
 
+### Finite temperature
 
 **Exercise:** show that the finite temperature case of the theorem is equivalent to showing that
 
@@ -262,24 +265,42 @@ $$ \sum_n e^{-\beta E_n(A,B)} \le \text{min} \left\{ \sum_n e^{-\beta E_n(A,\ove
 e^{-\beta E_n(\overline{B}, B)} \right\} $$
 
 When we take $\ket{A_n}$ constructed as before (from the Schmidt decomposed
-$\ket{\Omega_n}$), $E_n$), the algebra from before still holds so far as showing
+$\ket{\Omega_n}$), $E_n$), we can play a similar game to what we did earlier.
+
+We already know that
 
 $$E_n (A,B) \ge \frac{1}{2} \left[\bra{A_n} H[A,\overline{A}] \ket{A_n}+ \bra{B_n} H[\overline{B},B]
 \ket{B_n}  \right] $$
 
-It follows that 
+Some light algebra gets you as far as the left hand equality:
 
-$$ \sum_n e^{-\beta E_n(A,B)} \le \text{min} \left\{ \sum_n e^{-\beta \bra{A_n} H[A,\overline{A}]\ket{A_n} }, \sum_n
-e^{-\beta \bra{B_n} H[\overline{B}, B] \ket{B_n}} \right\} $$
+$$ \sum_n e^{-\beta E_n(A,B)} \le \frac{1}{2} \left[ \sum_n e^{-\beta \bra{A_n} H[A,\overline{A}]\ket{A_n} }+ \sum_n
+e^{-\beta \bra{B_n} H[\overline{B}, B] \ket{B_n}} \right] $$
 
-[missing]
+All that remians to do is show a finite temperature version of the variational principle, which is a
+bit subtle to show but ultimately true.
 
+_Claim_:
+Suppose $\ket{\psi_n}$ is an orthonormal basis for the Hilbert space. Then
 
-It then follows straightforwardly that the energy can always be decreased by letting $B = \bar{A}$,
-so this configuration is (at least one) ground state.
+$$\sum_n \exp(- \beta \bra{\psi_n} \hat{H} \ket{\psi_n}) \le \text{tr}\left(\exp(-\beta
+\hat{H})\right) $$
 
-$$\square$$
+The intuition to have here is that the ground state 'estimate' $\ket{\psi_0}$ is definitely not
+better than the true ground state, and even is $\psi_1$ gets more of the true ground state, it
+matters less because of the exponential.
 
+I think the way to do this is to make a continuity argument based on $\beta$: We know it's true
+when $\beta \to \infty$, and it's easy to see that as $\beta \to 0^+$ you asymptotically have
+
+$$ \sum_n 1 - \bra{\psi_n} H \ket{\psi_n}  \le 1 - \text{tr}(H) \le \psi_n 1$$
+
+which is hard to argue against, since $\psi_n$ is an orthonormal basis. If you take into account that
+
+$$\langle E \rangle_{\psi_n} \ge \langle E \rangle \Rightarrow \frac{\partial}{\partial \beta}\left[
+Z[\beta] - \tilde{Z}[\beta] \right] $$
+
+you have the result proven via Rolle's theorem.
 
 
 # Proving the flux phase theorem
