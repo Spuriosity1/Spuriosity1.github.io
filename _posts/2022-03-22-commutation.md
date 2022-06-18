@@ -269,5 +269,11 @@ expr.show()
 
 {% endhighlight %}
 
-This gets used a lot in the [Ringflip file](https://github.com/Spuriosity1/Commutation)
+This gets used a lot in the [Ringflip file](https://github.com/Spuriosity1/Commutation) on GitHub.
+
+# The End of the day
+I'm certain that this could be made 'smarter', but I think it's fit for the purpose it's designed
+for: double-checking algebraic brute force. Feel free to contact me via GitHub if you have any
+issues using it or want to complain abput the low-quality documentation.
+
 
