@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Eating Gluten-Free in Paris
-subtitle: Caesar did nothing wrong
+subtitle: It's not as bad as you might think
 tags: [food]
 ---
 
@@ -62,15 +62,6 @@ for label-reading, lapses in vocabulary and other similar endeavours
 
 # Quick bites
 
-**Maccas**
-
-It's Macdonalds.
-
-They only fry potatoes;
-
-they're gluten free.
-
-
 **La Guinguette d’Angèle**
 
 Takeaway-only quick bite, with vegan options as well. [2]
@@ -78,7 +69,7 @@ Takeaway-only quick bite, with vegan options as well. [2]
 
 
 
-#The supermarket
+# The supermarket
 
 After some searching, I found a packet of five (why five?) slices of Schär gluten free bread and a packet of sweet biscuits available at a
 Carefour express. Not all Carefours carry it though.
@@ -95,6 +86,29 @@ Carefour express. Not all Carefours carry it though.
 I stayed here. They have a small, but fit for purpose breakfast menu in the cafe downstairs
 with several GF options. Hipster vibes.
 
+
+
+# Crêperies
+
+These are your best bet in terms of capital 'F' French foodthat is gluten free, since buckwheat
+galettes traditionally contain no wheat flour.
+
+
+**Breizh Café**
+
+I found this place almost by accident, and it's fantastic. It's a Crêperie serving
+gluten free buckwheat Galettes with either traditional French fillings (egg, ham, cheese) or some
+light Japanese fusion (shiitake mushroom with wakame, lobster with yuzu, pastrami with an Asian
+pickle). Wash it down with a glass of their excellent Breton cider for an immensely satisfying meal. 
+
+Reassuringly popular with locals.
+
+
+**La Petite Bouclerie**
+
+A tiny crêperie in the Quarter Latin, very near Notre Dame and Sainte-Chapelle. They can do all of
+their sweet and savoury crêpes on buckwheat galettes. This is a very useful place to know about for
+a casual meal with friends. 'Sans gluten' is advertised on their signs, 
 
 
 # Pâtisserie and similar
@@ -170,14 +184,6 @@ are written in English. (probably still better than par for London tbh) [2]
 
 # Lunch & Dinner
 
-**Breizh Café**
-
-I found this place almost by accident, and it's fantastic. It's a Crêperie serving
-gluten free buckwheat Galettes with either traditional French fillings (egg, ham, cheese) or some
-light Japanese fusion (shiitake mushroom with wakame, lobster with yuzu, pastrami with an Asian
-pickle). Wash it down with a glass of their excellent Breton cider for an immensely satisfying meal. 
-
-Reassuringly popular with locals.
 
 **L'Osteria Ruggera**
 
@@ -203,11 +209,14 @@ As worthy as it sounds.
 
 # Ice cream
 
-**Grom** has gluten free cones.
+**Berthillon** is a famous café situated on one of the two islands in the middle of the Seine, serving gelato, cocktails and coffee late into the night. Their ice creams and sorbets do not contain any gluten ingredients, but the ice creams suffer from the dreaded "may contain traces" disclaimer. Sorbets are 100% safe though.
+
+
+**Grom** has gluten free cones. [5]
 
 # Sources
 
-Note that some of these are out of date. Parisian restaurants drop like flies at the best of times,
+Note that all of these are out of date. Parisian restaurants drop like flies at the best of times,
 and covid certainly didn't help. These are not in any order.
 
 
@@ -220,7 +229,7 @@ _Disclaimer: I do not speak French_
 
 ## English
 
-This one also has some useful phrases
+This one also has some useful phrases.
 [3](https://www.roadaffair.com/gluten-free-paris/)
 [4](https://wheatlesswanderlust.com/gluten-free-paris-restaurants/)
 [5](https://www.findmeglutenfree.com/fr/paris)
