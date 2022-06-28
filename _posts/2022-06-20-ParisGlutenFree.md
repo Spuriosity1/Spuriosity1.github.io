@@ -23,10 +23,13 @@ to mind. The prevalence of coeliac disease in Europe is currently
 restaurant feeding an average of 100 patrons a night has a 99.6% chance (\*) of seeing at least one
 coeliac every week.
 
-Many of the blog posts below paint a rosy picture of a gluten free revolution in Paris,
-but this is not really my experience. There are a _few_ places, but if you have come here hoping to
+Many of the blog posts used as sources below paint a rosy picture of a gluten free revolution in Paris,
+but this is not really the case. A French person in a shop told me about her gluten-intolerant
+friend trying to eat out in Paris, and finding it a bruising experience - "They even put it in
+chocolate!", she exclaimed. There are a _few_ places, but if you have come here hoping to
 experience all of French cuisine in a format tolerable by your guts, you will be disappointed.
-Going out spontaneously with friends is more of a challenge than in e.g. Edinburgh, Rome, Florence.
+Going out spontaneously with friends is more of a challenge than in e.g. Edinburgh, Rome,
+Florence.
 
 
 <span style="font-size: 10pt">
@@ -50,23 +53,58 @@ Of the sources listed in the bibliography, those which remain open were saved to
 list](https://goo.gl/maps/QBgjDixy6AK7jmXX6) for convenience.
 
 
-I'm just compiling a list here, so the descriptions will generally be quite spartan.
+I'm mostly just compiling a list here, so the descriptions will generally be quite spartan.
+
+
+# Rolling the Dice
+
+For my last day in Paris, I got some seafood (scallops) from L'Atlas, to be found near Odéon. The process was
+not as smooth as elsewhere, but the scallops were absolutely divine - cooked to perfection, with a
+butter sauce and some grilled tomatoes that perfectly complemented the sweetness of the shellfish.
+(In fact, I was only able to eat there at all thanks to the intervention of a French speaking
+Englishman seated next to me with a coeliac sister).
+
+I can recommend rolling the dice and going to a place you fancy the look of at least once - it is
+something of a shame to miss all of the food Paris is famous for. It's undeniably difficult, and a
+risk, but in my opinion worth it.
+
+Eating at general bistros is certainly smoothed significantly with the help of a proficient French
+speaker. If no francophones are available on your day of travel, I've found that the key phrases that are generally used for coeliacs are
+_j'ai une intolerance au gluten_, _sans gluten_ and _sans farine de blé_. If travelling without a
+French speaker, a restaurant card is essential. Yes, you __do__ look like a knob whipping out a little essay in French waxing lyrical about the difference between barley and buckwheat, but it has to be done.
+
+**The Gameplan**
+
+Your best bet is to go to a restaurant specialising in minimally treated cuts of meat or fish.
+Thick sauces and soups
+are dangerous due to the common French ingredient, the flour-containing _roux_. As anywhere else, stuffed things (which are generally
+stuffed with bread) and fried things (chips are often floured, and dedicated fryers are unheard of)
+should be avoided. Try to go at a less busy time, when the wait staff have time to deal with your bullshit.
+
 
 # Glossary
 
 Most Parisians unfortunate enough to staff service industry jobs in the tourist precincts of the
-city speak flawless English, but nonetheless it's helpful to know all of the danger terms in French
-for label-reading, lapses in vocabulary and other similar endeavours
+city speak flawless English, but nonetheless it's helpful to know all of the danger terms in French.
+The necessary nouns are very specific and not particularly similar to the French translations, so
+knowing these can be a lifesaver.
+
 
 | gluten free (gf) | sans gluten (sg) |
+| flour  | farine |
+| bread | pain |
+| buckwheat | blé noir |
 | wheat  | blé    |
 | barley | orge   |
 | rye    | seigle |
 | spelt  | épautre |
 | oats   | avoine |
 | dextrose | dextrose |
+| croissant | croissant |
 | thickener | épaississant |
 | May contain traces of gluten | Poit contenir des traces de gluten |
+
+
 
 # Quick bites
 
@@ -79,12 +117,13 @@ Takeaway-only quick bite, with vegan options as well. [2]
 Nice food in a box to take away and eat in the sun. [5]
 
 
-# The supermarket
+# The Supermarket
 
 After some searching, I found a packet of five (why five?) slices of Schär gluten free bread and a packet of sweet biscuits available at a
-Carefour express. Not all Carefours carry it though.
+Carefour express. Not all Carefours carry it though. However, almost _any_ supermarket will have a
+packet of puffed-corn crackers (_galletes du mais_) and a wheel of cheese or packet of ham.
 
-**Meat and Cheese** 
+**Meats** 
 
 Proscuitto made in the traditional way is _technically_ not entirely gluten free. When the pork leg
 is salted and hung out to dry, the cut surface is covered with a wheat dough to stop it drying out
@@ -96,9 +135,16 @@ the meat.
 
 Wheat is not involved in the ham-making process as far as I'm aware.
 
-_TODO: review of common ham / bacon brands_
+**Chocolate**
+
+Lindt dark chocolate is as far as you can go if you adhere strictly to avoiding "may contain
+traces of gluten".
 
 
+# The Eurostar
+
+The on-board menu stocks a gluten free tomato soup and risotto. Not going to earn it a Michelin
+star, but why would a tyre company want to support the competition?
 
 # Hotels
 
@@ -116,7 +162,7 @@ galettes traditionally contain no wheat flour.
 
 **Breizh Café**
 
-I found this place almost by accident, and it's fantastic. It's a Crêperie serving
+I found this place almost by accident, and it's fantastic. It's a group of three Crêperies serving
 gluten free buckwheat Galettes with either traditional French fillings (egg, ham, cheese) or some
 light Japanese fusion (shiitake mushroom with wakame, lobster with yuzu, pastrami with an Asian
 pickle). Wash it down with a glass of their excellent Breton cider for an immensely satisfying meal. 
@@ -174,13 +220,38 @@ Chain of sweet chops doing chocolates and gluten free macarons. [5]
 
 **Copains**
 
-Cinnamon rolls, cookies and breads that are light and airy, with a proper crunchy crust. [5]
+Cinnamon rolls, top-tier patisserie and breads that look just likethe real thing, though I did not
+get a chance to try them. I had an escargot, a babka and a Paris-Brest (a ring of choux pastry
+filled with a chestnut cream, hazelnuts and flaked almonds. I described this to friends as a
+'topologically nontrivial éclair'). I would count the pastry as the nicest sweet I had in Paris.
+
+If you go to one place on this list, it should be here. It is located relatively conveniently in Les
+Halles, near the big tourist block consisting of the Centre Pompidou, Louvre, Saint Chapelle and
+Notre Dame.
+
+The only catch is that they are closed on Mondays. [correct as of June 2022]
+
+[5, self]
 
 **NoGlu**
 
-Purveyors of glazed doughnuts, baguettes and pastry. Though they open at 8:30, they don't have croissants until 9:30. Try to
-get in relatively early - by 18:00, they only have a few things left. They serve croque monsieur ans similar up to 16:00.
-I tried their éclairs and zucchini quiche, both of which were delightful nonetheless. [1, 2, self]
+Purveyors of glazed doughnuts, baguettes and pastry. Though they open at 8:30, they generally don't get their stock until 9:30. Try to
+get in relatively early - by 18:00, they only have a few things left. They serve croque monsieur and similar up to 16:00.
+I tried their zucchini quiche, éclairs, baguettes, croissants, pain au chocolat, brioche bun,
+madelines and a cappucino.
+
+The coffee had really expertly made milk, and I certainly can't fault any of the pastries for
+technical things - the croissant and pain au chocolat were flaky and delicious, though I preferred
+the pain au chocolat - but you should be warned that these sweet patisseries are very small and very
+expensive (even by Parisian standards). The zucchini quiche was delicious, and makes for a very
+respectable lunch.
+
+The baguettes are fairly standard gluten-free fare - they
+did not weave the same magic as others have with achieving soft exteriors and crisp exteriors. A
+Schär roll (one of the ones sold part-cooked that you have to finish cooking in the oven) arguably
+gives an experience that approximates a baguette more closely.
+
+[1, 2, self]
 
 **La belle vie sans gluten - Clementine Oliver**
 
@@ -261,7 +332,7 @@ of cross contamination. [6]
 
 **IDA**
 
-"semi-gastronomic," trendy place. You can only order the Chef's menu, which seems to be excellent. [6]
+A small, "semi-gastronomic," trendy place. You can only choose between two options - the Chef's menu (blind) and the Chef's favourites. Both are excellent - the house made pasta was replaced with gluten free spaghetti in a truffle and cream sauce, while other items can generally be modified to be made gluten free in a trivial way (e.g. leaving the cracker off the burrata course). All dishes are freshly made with care and attention to detail. Try to telephone ahead if you can to advise of your dietaries, and they will be able to accomodate you - they did a pretty good job with me, even without advance warning. [6]
 
 **La Scuderia del Mulino**
 
