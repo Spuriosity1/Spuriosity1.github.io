@@ -77,11 +77,10 @@ const fcc_coords = {'Dy': direction.fcc_Dy, 'Ti': direction.fcc_Ti};
 
 // Global variables
 let scene, camera, renderer, controls, clickMouse, moveMouse, raycaster;
-
+let Nx=1;
+let Ny=1;
+let Nz=1;
 // Parameters for the lattice
-let Nx = 4;
-let Ny = 4;
-let Nz = 4;
 
 let unitcells = []
 
@@ -129,7 +128,7 @@ function init() {
 
     // CAMERA MOVEMENT CONTROLS
     controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.target.set(Nx*4, Ny*4, Nz*4);
+    //controls.target.set(4,4,4);
     controls.enableDamping = true;
     controls.update();
 
@@ -294,7 +293,13 @@ function v3_sub(v1, v2){
 	return [v1[0] - v2[0], v1[1] - v2[1], v1[2] - v2[2]];
 }
 
+function v3_mul(a, v){
+	return [a*v[0], a*v[1], a*v[2]];
+}
+
 function construct_qsi(){
+
+    controls.target.set(4*Nx,4*Ny,4*Nz);
 	for (let i=0; i<Nx; i++){
 		for (let j=0; j<Ny; j++){
 			for (let k=0; k<Nz; k++){
@@ -309,6 +314,7 @@ function construct_qsi(){
 						spin.subl = ssl;
 						spin.plaqs = [];
 						spin.position.set(...pos);
+						spin.fcc_parent = [...fcc_r];
 						
 						scene.add(spin);
 						qsi.m_spin.push(spin);
@@ -337,6 +343,7 @@ function construct_qsi(){
 						plaq.subl = psl;
 						plaq.spins = [];
 						plaq.position.set(...pos);
+						plaq.fcc_parent = [...fcc_r];
 						
 						scene.add(plaq);
 						qsi.m_plaq.push(plaq);
@@ -376,6 +383,28 @@ function construct_qsi(){
 			
 }
 
+function delete_qsi(){
+	qsi.m_spin.forEach((s) => {
+		s.material.dispose();
+		s.geometry.dispose();
+		scene.remove(s);
+	} );
+	qsi.m_tetra.forEach((t) => {
+		t.geometry.dispose();
+		t.material.dispose();
+		scene.remove(t);
+	} );
+	qsi.m_ptetra.forEach((p) => {
+		p.geometry.dispose();
+		p.material.dispose();
+		scene.remove(p);
+	} );
+	qsi.m_plaq.forEach((p) => {
+		p.geometry.dispose();
+		p.material.dispose();
+		scene.remove(p);
+	} );
+}
 
 
 ///////////////////////////////////////////////////
@@ -475,6 +504,42 @@ function update_materials(which, op) {
 	});
 }
 
+function update_scaling(scale) {
+
+	let s = scale;
+
+	qsi['m_tetra'].forEach((t)=>{
+		if (t.subl == 'A') {
+			t.scale.set(1+s,1+s,1+s);
+		}
+		else if (t.subl == 'B') 
+		{
+			t.scale.set(1-s,1-s,1-s);
+		}
+	});
+	qsi['m_spin'].forEach((spin)=>{
+		spin.position.set(...v3_add(spin.fcc_parent, v3_mul(1+s,direction.pyro[spin.subl]))); 
+	});
+	
+	s = -scale/3;
+	qsi['m_ptetra'].forEach((t)=>{
+		if (t.subl == 'A') {
+			t.scale.set(1+s,1+s,1+s);
+		}
+		else if (t.subl == 'B') 
+		{
+			t.scale.set(1-s,1-s,1-s);
+		}
+	});
+
+
+	qsi['m_plaq'].forEach((spin)=>{
+		spin.position.set(...v3_add(spin.fcc_parent, v3_mul(1+s,direction.pyro[spin.subl]))); 
+		let ss = Math.min(1-s, 1+s);
+		spin.scale.set(ss,ss,ss);
+	});
+
+}
 
 
 function handleClick(e) {
@@ -511,6 +576,9 @@ function handleClick(e) {
 
 }
 
+
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Interactivity Attachments
 
@@ -535,7 +603,19 @@ document.addEventListener("DOMContentLoaded",function () {
 	document.getElementById('Ti_slider').oninput = function(){update_materials("m_ptetra", this.valueAsNumber/100)} ;
 	document.getElementById('pyro_Dy_slider').oninput = function(){update_materials("m_spin", this.valueAsNumber/100)} ;
 	document.getElementById('pyro_Ti_slider').oninput = function(){update_materials("m_plaq", this.valueAsNumber/100)} ;
-	
+	document.getElementById('breathing_slider').oninput = function(){update_scaling(this.valueAsNumber/100)} ;
+	document.getElementById('system-size').oninput = function(){
+		if (this.valueAsNumber < 0 || this.valueAsNumber > 6) return;
+		Nx = this.valueAsNumber;
+		Ny = this.valueAsNumber;
+		Nz = this.valueAsNumber;
+		delete_qsi();
+		construct_qsi();
+		for (slider of document.querySelectorAll('.slider')){
+			slider.oninput();
+		}
+	} ;
+
 	
 	for (slider of document.querySelectorAll('.slider')){
 		slider.oninput();

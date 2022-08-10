@@ -118,6 +118,11 @@ The notation $\frac{Q}{E-H_0} \equiv Q K$ is unambiguous since these operators c
 that the mysterious $K$ operator should really be given its proper name of Green's function.
 
 
+## Ordinary perturbation theory
+
+Show that this derivation amounts to the same thing as standard nondegenerate perturbation theory
+under suitable assumptions (e.g. that $\mathcal{M}$ is one dimensional)
+
 # Examples
 
 ## Quantum spin ice
@@ -278,7 +283,3 @@ $$Q_p = \tau_1^y\tau_3^y \tau_2^z \tau_4^z$$
 (up to a possible sign error)
 
 
-## Ordinary perturbation theory
-
-Show that this derivation gives you the same thing as standard nondegenerate perturbation theory
-under suitable assumptions (e.g. that $\mathcal{M}$ is one dimensional)

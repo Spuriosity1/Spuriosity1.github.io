@@ -17,46 +17,50 @@ sliders around to adjust the opacity of the various parts that make up the rende
 </p>
 
 <!-- God I hate HTML -->
-
-<!-- <div class="slidecontainer">
-	<p>Breathing</p>
-  <input type="range" min="-100" max="100" value="0" class="slider" id="breathing_slider"> 
-</div> -->
-
+<table>
+	<tr>
+		<td>
+			<div>
+				System Size <input type="number" value="1" min="1", max="6", id="system-size">
+			</div>
+		</td>
+		<td>
+			<div class="slidecontainer">
+				Breathing
+  				<input type="range" min="-100" max="100" value="0" class="slider" id="breathing_slider"> 
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>
 <div class="slidecontainer">
-	Main ('Dy') Diamond Terahedra
+	Main Diamond Terahedra
   <input type="range" min="0" max="100" value="100" class="slider" id="Dy_slider"> 
 </div>
-
-<div class="slidecontainer">
-	Dual ('Ti') Diamond Lattice
-  <input type="range" min="0" max="100" value="100" class="slider" id="Ti_slider">
-</div>
-
-<!-- Show as Tetrahedra
-<label class="switch">
-  <input type="checkbox" id="Ti_checkbox">
-  <span class="swslider"></span>
-</label> -->
-
+		</td>
+		<td>
 <div class="slidecontainer">
 Pyrochlore Opacity
   <input type="range" min="0" max="100" value="100" class="slider" id="pyro_Dy_slider">
-
-</div>                                                                      
-
-<!-- Show as Plaquettes
-
-<label class="switch">
-  <input type="checkbox" id="pyro_Dy_checkbox">
-  <span class="swslider"></span>
-</label> -->
-
-<div class="slidecontainer">                                                
-	Plaquette ('Ti') Opacity
-  <input type="range" min="0" max="100" value="100" class="slider" id="pyro_Ti_slider">
 </div>
+		</td>
+	</tr>
+	<tr>
+		<td>
+<div class="slidecontainer">
+	Dual Diamond Tetrahedra
+  <input type="range" min="0" max="100" value="0" class="slider" id="Ti_slider">
+</div>
+		</td>
 
+<td>
+<div class="slidecontainer">                                                
+	Plaquette Opacity
+  <input type="range" min="0" max="100" value="0" class="slider" id="pyro_Ti_slider">
+</div>
+</td>
+	</tr>
+</table>
 <!-- Show as Plaquettes
 <label class="switch">
   <input type="checkbox" id="pyro_Ti_checkbox">
