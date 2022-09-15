@@ -39,11 +39,10 @@ $$
 	\hspace{3em}[2]
 $$
 
-We note that there will be an inverse to the operator $E-H_0$ everywhere that $E$ doesn't overlap
-with an eigenvalue. We carefully define this inverse 
-by summing over the basis
-elements for $\mathcal{H} = Span\{\ket{\alpha}\}$ with the restriction that $E$ is not an eigenvalue of
-$H_0$ for any $\ket{\alpha}$.
+If $E-H_0$ is nondegenerate (i.e. $E$ does not overlap with an eigenvalue of $H_0$), it is clear to see that in
+the finite dimensional case this operator is full rank and therefore invertible. (Hint: $H = UDU^\dagger \Rightarrow (E-H_0) =
+U(E-D)U^\dagger$)
+It is clearly a map $\mathcal{H} \to \mathcal{H}$, and can be cnstructed explicitly as
 
 $$
 	K = \sum_{\alpha} \frac{\ket{\alpha} \bra{\alpha}}{E - \epsilon_\alpha} \hspace{3em}[3]
@@ -77,16 +76,16 @@ object clearly does not exist, since $P$'s kernel is zero for most of the Hilber
 The subterfuge here comes from convergence of the series. In the self-referential step, we
 implicitly assumed that $\lim_{N\ to \infty} (KQV)^N \ket{\psi} = 0$, which only holds true for
 certain choices of $V$ and states in a certain subspace of $\mathcal{H}$. I don't believe it's
-possible to find a more useful description of this subspace without choosing a specific $V$, but
-reasonable assumptions - e.g. that $V$'s largest eigenvalue is smaller than the gap between
-the largest energy in $\mathcal{M}$ - it should be doable. We'll worry about it later.
+possible to find a more useful specification of this subspace without choosing a specific $V$.
+We see that there are obvious issues if $E$ is an eigenvlue of a model space element and 
+We'll worry about it as it emerges.
 
 It's also worth noting that we could have used a subtly different operator to invert $E-H_0$,
 
 $$K'(E) = \sum_{\alpha \in \mathcal{M}^\perp} \frac{\ket{\alpha}\bra{\alpha}}{E-\epsilon_\alpha}$$
 
-which has the advantage of being defined even if $E$ overlaps with a ground state energy. Kitaev
-calls this object $G_0'(E)$. Wherever $K$ is defined, $K(E)' = QK(E)Q = QK(E)$
+which has the advantage of being defined even if $E$ overlaps with an energy in $\mathcal{M}$. Kitaev
+calls this object $G_0'(E)$. Wherever $K$ is defined, $K'(E) = QK(E)Q = QK(E)$
 
 ## The Effective Hamiltonian
 
@@ -99,24 +98,102 @@ we're essentially done.
 
 $$ P V \Omega(E) P \ket{\psi}  = (E-H_0) P \ket{\psi}$$
 
-$$ H_{eff} P \ket{\psi} = (E-H_0) P \ket{\psi} $$
+$$ H_{eff} P \ket{\psi} = E P \ket{\psi} $$
 
-This is more obviously the result we wanted when we assume that $\mathcal{M}$ is completely
-degenerate with energy $\epsilon_0$ - 
+where $H_{eff}$ has beein identified with $P\left[H_0 + V\Omega(E) \right]P$.
 
-$$ H_{eff} P \ket{\psi} = (E-\epsilon_0) P \ket{\psi} $$
+It is usually the case that $\mathcal{M}$ is completely energy degenerate, in which case
+$PH_0P\equiv \epsilon_0$ is a trivial constant that can be dropped. 
 
-but in any case, evaluating $H_0$ on a projected eigenstate is not hard.
+The series expansion of $H_{eff}$ sometimes written as
 
-The series is sometimes written as
-
-$$H_{eff} = P\left[ V + V\frac{Q}{E-H_0}V + V\frac{Q}{E-H_0}V\frac{Q}{E-H_0}V + ... \right] P$$
+$$H_{eff} = (H_0 +) P\left[ V + V\frac{Q}{E-H_0}V + V\frac{Q}{E-H_0}V\frac{Q}{E-H_0}V + ... \right] P$$
 
 (We used a hidden $P^2 = P$ for this step)
 
-The notation $\frac{Q}{E-H_0} \equiv Q K$ is unambiguous since these operators commute. Further, it suggests
-that the mysterious $K$ operator should really be given its proper name of Green's function.
+The notation $\frac{Q}{E-H_0} \equiv Q K$ is unambiguous since these operators commute. 
 
+## Non-Perturbative effects
+
+One may be led to believe that we've solved many body quantum mechanics with this - $\Omega$
+seemingly grants you access to the whole spectrum of the Hamiltonian by studying only a very small
+part of its eigenspace. This is of course too good to be true. We only have access to the subspace
+of $\mathcal{H}$ on which $\Omega$ is convergent, the 'perturbative subspace' if you like.
+Perturbation theory will not reveal any other states, including instantons and some solitons.
+In general, it will not get you the correct ground state either, cf. confinement.
+
+
+## Field theory and the self energy: why $K$ is a Green's function
+
+Supposing that $H$ is a differential operator (i.e. an operator on an infinite dimensional space
+rather than a finite dimensional one), a familiar concept from PDE theory is the Green's function
+
+$$G(x,t | x',t')$$
+
+defined to be the integral kernel required to invert a linear differential operator $\mathcal{L}$,
+i.e.
+
+$$\mathcal{L} \psi(x, t) = \rho(x,t) \Leftrightarrow \psi(x,t) = \int d^dx' dt'\, G(x,t | x',
+t')\rho(x',t')$$
+
+Some technicalities that are often brushed over:
+- By $\mathcal{L}$, I mean some kind of sum of functions and derivatives **and** the boundary
+  conditions that $\psi$ satisfies.
+- Green functions are in general **different** to the propagator, which is the fundamental solution of the
+  PDE. Propagators are **independent of boundary conditions**.
+- A "Green function" in mathematics means _any_ function that inverts the linear differential
+  operator. This is unique for a Laplace-like linear operator with boundary conditions (because any
+  harmonic function vanishing on the boundary is identically zero), but is not unique for the wave
+  equation. However, in physics there is generally a canonical choice of Green's function for the
+  situation - see the discussion
+  [here](https://physics.stackexchange.com/questions/27604/boundary-conditions-uniqueness-of-the-propagators-greens-functions)
+- Various physical quantities in physics are Green functions, though with subtle differences that
+  can bite you. See
+  [here](https://physics.stackexchange.com/questions/20797/differentiating-propagator-greens-function-correlation-function-etc)
+  for a valiant attempt at disentangling these notions.
+
+Fix some $E$, and further, assume that $E$ is such that $E-\hat{H}_0$  and $E-\hat{H}$ are invertible.
+
+Then we define
+
+$$\hat{G}_0 \equiv [E-H_0]^{-1} \hspace{2em} \hat{G} \equiv [E-H]^{-1} $$
+
+In the many-body context, the standard setup is that $H_0$ is the noninteracting/free theory - only $H$ captures the
+interactions. $H_0$ is block diagonal with respect to the many body Hilbert space, $H$ is not.
+
+One can usually write down $G_0$ with very little work - in the nonrelativistic case, a single free
+particle has
+
+$$\hat{G}_0^{(1)}(E) = \int d^dk \frac{1}{E-k^2/2m} \ket{k}\bra{k}$$
+
+In the many body Hilbert space, this needsto be promoted to a sum over all $N$ subspaces -
+i.e. $G_0 = \sum_{j=0}^{N-1} 1^{\otimes j} G_0^{(1)} 1^{\otimes N-j-1}$. Physicists do not generally
+bother with such nuances, and quote expressions for $\hat{G}_0^{(1)}(E)$ as the definition of
+$\hat{G}(E)$, but in the context of this page's story it's an important distinction.
+
+We wish to compute (some approximation to) the influence of the many-body Hamiltonian on the
+single-particle space. But we've already solved this problem - we know how to contruct $H_{eff}$
+acting only on the single-body space, and then we can simply define
+
+$$G_{eff} \equiv PGP = [E-H_{eff}]^{-1}$$
+
+$$ = \left[E - H_0 - PV\sum_{n=0}^\infty \left(\frac{QV}{E-H_0}\right)^n P \right]^{-1} $$
+
+$$ = \left[E - H_0 - PV\left(1-\frac{QV}{E-H_0}\right)^{-1} P \right]^{-1} $$
+
+The discussion so far is valid for a very general class of operators. 
+
+Now we specialise to particles represented by the uncountable momentum basis moving under a Hamiltonian with time- and position- translation symmetry.
+We also ignore the subtlety that the momentum space representation of the
+Hamiltonian may in general contain $k$ derivatives, since this does not happen very often in "garden
+variety" solutions.
+
+It can be shown (exercise) that the "effective Green's function" has the famous representation
+
+$$ G(k, \omega| k', \omega') \equiv \frac{1}{E-(\omega - \omega') - \Sigma(k-k' ,\omega-\omega')} $$
+
+where $\Sigma$ is the _self energy_ that exactly accounts for the influence of all orders of
+perturbative corrections.
 
 ## Ordinary perturbation theory
 
