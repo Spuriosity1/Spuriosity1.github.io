@@ -427,7 +427,8 @@ function highlight_obj() {
 function unhighlight_obj() {
 	if (INTERSECTED.material == undefined 
 	|| INTERSECTED.material.emissive == undefined
-	|| INTERSECTED.currentHex == undefined){
+	|| INTERSECTED.currentHex == undefined
+	|| INTERSECTED['stay_highlighted'] === true){
 		return;
 	}
 	INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
@@ -441,7 +442,8 @@ function render() {
 
 	const intersects = raycaster.intersectObjects( scene.children, false );
 	let interactive = document.getElementById('plaq_checkbox').checked 
-	|| document.getElementById('delete_checkbox').checked;
+	|| document.getElementById('delete_checkbox').checked
+	|| document.getElementById('log_checkbox').checked;
 	if  (document.getElementById('lightsaber_checkbox').checked) {
 		for (let i=0; i<intersects.length; i++) {
 			scene.remove(intersects[i].object);
@@ -566,11 +568,26 @@ function handleClick(e) {
 				scene.add(arrow);
 			});
 		}
-		
 	}
 
 	if (document.getElementById('delete_checkbox').checked && e.which === 1){
 		scene.remove(obj);
+	}
+
+	if (document.getElementById('log_checkbox').checked && e.which === 3){	
+		if ( obj['stay_highlighted'] === true ) {
+			obj['stay_highlighted'] = false;
+			//console.log("unhighlight");
+			//
+			// This is broken, but it's good enough
+			obj.material.emissive.setHex( obj.currentHex );
+			obj.material.transparent=true;
+		} else {
+			obj['stay_highlighted'] = true;
+			console.log(obj.position);
+		}
+			
+		
 	}
 	// console.log(INTERSECTED);
 

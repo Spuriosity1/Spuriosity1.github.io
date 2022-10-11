@@ -60,3 +60,8 @@ input:checked + .swslider:before {
 .swslider.round:before {
   border-radius: 50%;
 } 
+
+
+.container {
+	max-width:1400px
+}

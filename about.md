@@ -9,7 +9,10 @@ I'm a first year physics PhD student at the University of Cambridge. I study str
 electrons and frustrated magnetism; materials in which conventional approximations about
 independent electrons break down and more interesting quantum behaviour can manifest.
 
-I also take an interest in high-voltage power electronics.
+I also take an interest in high-voltage power electronics, web design and low-level programming.
 
 ### Contact Me
- - email: thathatatt {at} gmail.com
+ - email: als2‍17 at cam do‍t ac dot u‍k
+
+
+
