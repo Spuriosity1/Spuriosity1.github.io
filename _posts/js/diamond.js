@@ -215,6 +215,8 @@ flip.makeRotationX(Math.PI/2);
 const sphere_shape = new THREE.SphereGeometry(0.2,32,32);
 const tetraA_shape = new THREE.TetrahedronGeometry(Math.sqrt(3));
 const tetraB_shape = new THREE.TetrahedronGeometry(Math.sqrt(3));
+
+const bigsphere_shape = new THREE.SphereGeometry(0.8,32,32);
 tetraB_shape.applyMatrix4(flip);
 
 // Create the arow geometry
@@ -404,6 +406,10 @@ function delete_qsi(){
 		p.material.dispose();
 		scene.remove(p);
 	} );
+	qsi.m_plaq = []
+	qsi.m_ptetra = []
+	qsi.m_tetra = []
+	qsi.m_spin = []
 }
 
 
@@ -433,6 +439,31 @@ function unhighlight_obj() {
 	}
 	INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
 	INTERSECTED.material.transparent=true;
+}
+
+// Light up the three plaquette surfaces
+//
+function highlight_planes(){
+	reset_plaqs()
+	qsi.m_plaq.forEach( p => {
+		let em = p.material.emissive;
+		if(Math.abs(p.position.x+1) < 1){
+    		em.setHex(0xff0000);
+  		}
+		if(Math.abs(p.position.y+1) < 1){
+    		em.setHex(em.getHex() | 0x00ff00);
+  		}
+		if(Math.abs(p.position.z+1) < 1){
+    		em.setHex(em.getHex() | 0x0000ff);
+  		}
+	});
+}
+
+
+function reset_plaqs(){
+	qsi.m_plaq.forEach( p => {
+    	p.material.emissive.setHex(0x000000);
+	});
 }
 
 
@@ -473,7 +504,7 @@ function render() {
 // Recursive function to render the scene
 function animate() {
     controls.update();
-	render()
+	render();
     requestAnimationFrame(animate);
 };
 
@@ -628,15 +659,40 @@ document.addEventListener("DOMContentLoaded",function () {
 		Nz = this.valueAsNumber;
 		delete_qsi();
 		construct_qsi();
-		for (slider of document.querySelectorAll('.slider')){
+		for (slider of document.querySelectorAll('.live')){
 			slider.oninput();
 		}
 	} ;
 
 	
-	for (slider of document.querySelectorAll('.slider')){
-		slider.oninput();
-	}
+	document.getElementById('surface_checkbox').oninput = function() { if (this.checked) { highlight_planes() } else {reset_plaqs()} };
+
+
+
+	document.getElementById('tetra_dropdown').oninput = function() { 
+		if (this.value == "Tetrahedra") {
+			qsi.m_tetra.forEach( t => {
+				t.geometry = (t.subl === "A") ? tetraA_shape : tetraB_shape;
+			});
+			qsi.m_ptetra.forEach( t => {
+				t.geometry = (t.subl === "A") ? tetraA_shape : tetraB_shape;
+			});
+		} else {	
+			qsi.m_tetra.forEach( t => {
+				t.geometry = bigsphere_shape
+			});
+			qsi.m_ptetra.forEach( t => {
+				t.geometry = bigsphere_shape
+			});
+		}
+	};
+
+
+	// run the listeners once to handle cached values
+		for (slider of document.querySelectorAll('.live')){
+			slider.oninput();
+		}
+	
 
 	canvas= mum.children[0];
 	canvas.addEventListener('mousemove', onPointerMove);

@@ -27,7 +27,7 @@ sliders around to adjust the opacity of the various parts that make up the rende
 		<td>
 			<div class="slidecontainer">
 				Breathing
-  				<input type="range" min="-100" max="100" value="0" class="slider" id="breathing_slider"> 
+  				<input type="range" min="-100" max="100" value="0" class="slider live" id="breathing_slider"> 
 			</div>
 		</td>
 	</tr>
@@ -35,13 +35,13 @@ sliders around to adjust the opacity of the various parts that make up the rende
 		<td>
 <div class="slidecontainer">
 	Main Diamond Terahedra
-  <input type="range" min="0" max="100" value="100" class="slider" id="Dy_slider"> 
+  <input type="range" min="0" max="100" value="100" class="slider live" id="Dy_slider"> 
 </div>
 		</td>
 		<td>
 <div class="slidecontainer">
 Pyrochlore Opacity
-  <input type="range" min="0" max="100" value="100" class="slider" id="pyro_Dy_slider">
+  <input type="range" min="0" max="100" value="100" class="slider live" id="pyro_Dy_slider">
 </div>
 		</td>
 	</tr>
@@ -49,57 +49,92 @@ Pyrochlore Opacity
 		<td>
 <div class="slidecontainer">
 	Dual Diamond Tetrahedra
-  <input type="range" min="0" max="100" value="0" class="slider" id="Ti_slider">
+  <input type="range" min="0" max="100" value="0" class="slider live" id="Ti_slider">
 </div>
 		</td>
 
 <td>
 <div class="slidecontainer">                                                
 	Plaquette Opacity
-  <input type="range" min="0" max="100" value="0" class="slider" id="pyro_Ti_slider">
+  <input type="range" min="0" max="100" value="0" class="slider live" id="pyro_Ti_slider">
 </div>
 </td>
 	</tr>
-</table>
 <!-- Show as Plaquettes
 <label class="switch">
   <input type="checkbox" id="pyro_Ti_checkbox">
   <span class="swslider"></span>
 </label> -->
 
-
+<tr>
+	<td>
 <div>
-  Annotate Plaquettes (right click)
+
 <label class="switch">
-  <input type="checkbox" id='plaq_checkbox'>
+  <input type="checkbox" id='surface_checkbox' class="live">
   <span class="swslider"></span>
 </label>
+  Show Non-Contractible Surfaces
 </div>
-
-
+	</td><td>
 <div>
-  Log Locations (right click)
-<label class="switch">
-  <input type="checkbox" id='log_checkbox'>
-  <span class="swslider"></span>
-</label>
-</div>
-
-<div>
-  Delete Objects (left click)
 <label class="switch">
   <input type="checkbox" id='delete_checkbox'>
   <span class="swslider"></span>
 </label>
+
+  Delete Objects (left click)
 </div>
+	</td>
+</tr>
+<tr>
+	<td>
 
 <div>
-  Lightsaber
+
+Show Diamond Lattice as <select id="tetra_dropdown" class="live">
+	<option value="Tetrahedra">Tetrahedra</option>
+	<option value="Spheres">Spheres</option>
+</select>
+</div>
+
+	</td>
+	<td>
+<div>
 <label class="switch">
   <input type="checkbox" id='lightsaber_checkbox'>
   <span class="swslider"></span>
 </label>
+
+  Lightsaber
 </div>
+	</td></tr>
+
+<tr>
+	<td>
+<div>
+<label class="switch">
+  <input type="checkbox" id='plaq_checkbox'>
+  <span class="swslider"></span>
+</label>
+
+  Annotate Plaquettes (right click)
+</div>
+	</td>
+	<td>
+<div>
+<label class="switch">
+  <input type="checkbox" id='log_checkbox'>
+  <span class="swslider"></span>
+</label>
+  Log Locations (right click)
+</div>
+
+	</td>
+</tr>
+
+
+</table>
 
 <div id='3D_TARGET' style="margin-top:2em;height:750px"></div>
 
