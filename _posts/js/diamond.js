@@ -158,6 +158,8 @@ function init() {
     // DIAMOND LATTICE
 	construct_qsi();
 
+	visons.forEach((v)=>{scene.add(v); v.visible=false;});
+
 };
 
 
@@ -625,6 +627,30 @@ function handleClick(e) {
 }
 
 
+let visons = [];
+for (let i=0; i<8; i++){
+	let material = new THREE.MeshPhongMaterial({color:(i%2==0?0xc0c0ff:0x0000ff)});
+	visons.push(new THREE.Mesh(sphere_shape,material));
+}
+
+
+
+function addVisonOctupole(N){
+	let sys_size = 4*N+1
+	visons[0].position.set(...v3_add(direction.fcc_Ti[0], [8*(2*N), 8*(2*N), 8*(2*N)]));
+	visons[2].position.set(...v3_add(direction.fcc_Ti[1], [8*(2*N), 0, 0 ]));
+	visons[4].position.set(...v3_add(direction.fcc_Ti[2], [0, 8*(2*N), 0 ]));
+	visons[6].position.set(...v3_add(direction.fcc_Ti[3], [0, 0, 8*(2*N)]));
+
+	visons[1].position.set(...v3_add(v3_add(direction.fcc_Ti[0],direction.diamond[1]), [8*(3*N), 8*(3*N), 8*(3*N)]));
+	visons[3].position.set(...v3_add(v3_add(direction.fcc_Ti[1],direction.diamond[1]), [8*(3*N), 8*N, 8*N ]));
+	visons[5].position.set(...v3_add(v3_add(direction.fcc_Ti[2],direction.diamond[1]), [8*N, 8*(3*N), 8*N ]));
+	visons[7].position.set(...v3_add(v3_add(direction.fcc_Ti[3],direction.diamond[1]), [8*N, 8*N, 8*(3*N)]));
+
+	visons.forEach((v)=>{v.visible = true;});
+}
+
+	
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -652,7 +678,7 @@ document.addEventListener("DOMContentLoaded",function () {
 	document.getElementById('pyro_Dy_slider').oninput = function(){update_materials("m_spin", this.valueAsNumber/100)} ;
 	document.getElementById('pyro_Ti_slider').oninput = function(){update_materials("m_plaq", this.valueAsNumber/100)} ;
 	document.getElementById('breathing_slider').oninput = function(){update_scaling(this.valueAsNumber/100)} ;
-	document.getElementById('system-size').oninput = function(){
+	document.getElementById('system-size').onchange = function(){
 		if (this.valueAsNumber < 0 || this.valueAsNumber > 6) return;
 		Nx = this.valueAsNumber;
 		Ny = this.valueAsNumber;
