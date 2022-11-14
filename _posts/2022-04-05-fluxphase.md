@@ -126,7 +126,7 @@ $\{\ket{n}, i\ket{n}\}$. $K$ is then constructed explcitly via $K\ket{n} = \ket{
 -i\ket{n}$. It follows immediately that $K$ is antilinear and $K^2 = 1$. Note that $K^\dagger$ is **not defined** for
 antilinear operators. 
 
-$KT$ and $TK$ are unitary, since $\braket{TK\phi \vert TK \psi} = \overline{\braket{K \psi \vert K \phi}} =
+$KT$ and $TK$ are unitary, since $\braket{TK\phi \vert TK \psi} = \overline{\braket{K \phi \vert K \psi}} =
 \braket{\phi \vert \psi}$, which proves the lemma since $T KK = T = UK$ for some unitary operator
 $U$. Then, letting $\ket{m} = U \ket{n}$, $T\ket{m} = T TK\ket{n} = \ket{n}$.
 In fact, we're being unnecessarily abstract: $U$ is diagonal (in the $\mathbb{C}$ basis), i.e. it's
