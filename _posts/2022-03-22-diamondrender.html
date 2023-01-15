@@ -92,9 +92,10 @@ Pyrochlore Opacity
 
 <div>
 
-Show Diamond Lattice as <select id="tetra_dropdown" class="live">
-	<option value="Tetrahedra">Tetrahedra</option>
-	<option value="Spheres">Spheres</option>
+Show system as <select id="geom_dropdown" class="live">
+
+	<option value="SpinIce">Spin Ice</option>
+	<option value="H2O">Water Ice</option>
 </select>
 </div>
 
@@ -112,31 +113,49 @@ Show Diamond Lattice as <select id="tetra_dropdown" class="live">
 
 <tr>
 	<td>
-<div>
-<label class="switch">
-  <input type="checkbox" id='plaq_checkbox'>
-  <span class="swslider"></span>
-</label>
-
-  Annotate Plaquettes (right click)
-</div>
+<!--
+		<div>
+Show Pyrochlore Lattice as <select id="pyro_dropdown" class="live">
+	<option value="Spheres">Spheres</option>
+	<option value="Arrows">Arrows</option>
+		</div> -->
+		<div>
+			 Classical Spin Ice,
+			$T/J_{zz}$ =
+  <input type="number" min="0.01" max="10" value="0.01" class="live" step="0.01" id="temp_slider"
+  style="width:5em">
+<button type="button" id="simulate_button" style="width:10em">Simulate</button>
+		</div>
 	</td>
 	<td>
-<div>
-<label class="switch">
-  <input type="checkbox" id='log_checkbox'>
-  <span class="swslider"></span>
-</label>
-  Log Locations (right click)
-</div>
+		Initialise to ordered state <select id="order_dropdown">
+			<option value="AIAO">AIAO</option>
+			<option value="3I1O/1I3O">Spinon Crystal</option>
+			<option value="2I2O">Spin Ice</option>
+		</select>
+		 <button type="button" id="order_set">Set</button> 
+	</td>
+</tr>
+<tr><td>
+		<div>
+			Tick Rate: <input type="number" id="tickrate_display" style="width:5em"></input>$s^{-1}$
+  <input type="range" min="1" max="100" value="10" class="live slider" step="1" id="trate_slider"> 
+		</div>
+	</td>
+	<td>
+
 
 	</td>
 </tr>
-
-
 </table>
 
 <div id='3D_TARGET' style="margin-top:2em;height:80vh"></div>
+
+
+
+
+
+
 
 
 <h1>Okay, but why?</h1>
@@ -186,6 +205,23 @@ the breathing pyrochlore lattice.
 </p>
 
 
+<div>
+<label class="switch">
+  <input type="checkbox" id='log_checkbox'>
+  <span class="swslider"></span>
+</label>
+  (Debug) Log Locations (right click)
+</div>
+
+
+<div>
+<label class="switch">
+  <input type="checkbox" id='plaq_checkbox'>
+  <span class="swslider"></span>
+</label>
+
+  Annotate Plaquettes (right click)
+</div>
 
 <script>
 {% include_relative js/diamond.js %}
