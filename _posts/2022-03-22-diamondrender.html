@@ -1,63 +1,83 @@
 ---
 layout: post
-title: Dual pyrochlore lattice 3D example
-subtitle: How does diamond work though?
+title: Spin Ice
+subtitle: From water to rare earth moments
 tags: [cond-mat, code]
 render3d: true
 katex: true
 ---
-<p>
-This simulaiton shows the structure of two 'dual' diamond lattices, called 'Dy' and 'Ti', and the
-pyrochlore lattices formed by placing sites on bond midpoints in the Anderson ice model fashion.
-</p>
 
 <p>
 You can orbit and pan around the scene below with left and right clicks respectively. Drag the
-sliders around to adjust the opacity of the various parts that make up the rendering.
+sliders around to adjust the opacity of the various parts that make up the rendering, and hover over
+the controls for more information.
 </p>
 
 <!-- God I hate HTML -->
 <table>
 	<tr>
 		<td>
-			<div>
-				System Size <input type="number" value="1" min="1", max="6", id="system-size">
+			<div class="tooltip">
+				System Size
+			<span class="tooltiptext">The number of unit cells on one side of the cube.</span>
 			</div>
+<input type="number" value="1" min="1", max="6", id="system-size">
+
 		</td>
 		<td>
-			<div class="slidecontainer">
-				Breathing
-  				<input type="range" min="-100" max="100" value="0" class="slider live" id="breathing_slider"> 
+			<div class="tooltip">
+				Breathing Anisotropy
+				<span class="tooltiptext">
+					The difference between the size of the 'up' and 'down'
+				tetrahedra. This is not just cosmetic, it also affects the physics of the simulation!
+				</span>
 			</div>
+  			<input type="range" min="-100" max="100" value="0" class="slider live" id="breathing_slider"> 
 		</td>
 	</tr>
 	<tr>
 		<td>
-<div class="slidecontainer">
-	Main Diamond Terahedra
-  <input type="range" min="0" max="100" value="100" class="slider live" id="Dy_slider"> 
-</div>
+			<div class="tooltip">
+				Main Diamond Terahedra
+				<span class="tooltiptext">
+					Opacity of the imaginary tetrahedra connecting nearest-neighbour spins. These
+					are the oxygen atoms of water ice.
+				</span>
+			</div>
+  			<input type="range" min="0" max="100" value="100" class="slider live" id="Dy_slider"> 
 		</td>
 		<td>
-<div class="slidecontainer">
-Pyrochlore Opacity
-  <input type="range" min="0" max="100" value="100" class="slider live" id="pyro_Dy_slider">
-</div>
+			<div class="tooltip">
+				Pyrochlore Opacity
+				<span class="tooltiptext">
+					Opacity of the small black arrows / dots, which represent the real magnetic
+					spins in the system.
+				</span>
+			</div>
+  			<input type="range" min="0" max="100" value="100" class="slider live" id="pyro_Dy_slider">
 		</td>
 	</tr>
 	<tr>
 		<td>
-<div class="slidecontainer">
+<div class="tooltip">
 	Dual Diamond Tetrahedra
-  <input type="range" min="0" max="100" value="0" class="slider live" id="Ti_slider">
+	<span class="tooltiptext">
+		Opacity of the imaginary tetrahedra connecting nearest-neighbour plaquettes.
+	</span>
 </div>
+  <input type="range" min="0" max="100" value="0" class="slider live" id="Ti_slider">
 		</td>
 
 <td>
-<div class="slidecontainer">                                                
+<div class="tooltip">                                                
 	Plaquette Opacity
-  <input type="range" min="0" max="100" value="0" class="slider live" id="pyro_Ti_slider">
+	<span class="tooltiptext">
+		Opacity of the imaginary tetrahedra connecting nearest-neighbour plaquettes. In water ice,
+		there is nothing actually here; in spin ice materials the plaquette centres are usually non-magnetic
+		scaffolding atoms (e.g. Ti in Dy<sub>2</sub>Ti<sub>2</sub>O<sub>7</sub>)
+	</span>
 </div>
+  <input type="range" min="0" max="100" value="0" class="slider live" id="pyro_Ti_slider">
 </td>
 	</tr>
 <!-- Show as Plaquettes
@@ -68,23 +88,30 @@ Pyrochlore Opacity
 
 <tr>
 	<td>
-<div>
-
+<div class="tooltip">
+  Show Non-Contractible Surfaces
+  <span class="tooltiptext">
+	  Highlights three (distinct) closed surfaces that cannot be deformed into points. These are
+	  related to the nontrivial elements of the deRham cohomology of T<sup>3</sup>.</span>
+</div>
 <label class="switch">
   <input type="checkbox" id='surface_checkbox' class="live">
   <span class="swslider"></span>
 </label>
-  Show Non-Contractible Surfaces
-</div>
-	</td><td>
-<div>
-<label class="switch">
-  <input type="checkbox" id='delete_checkbox'>
-  <span class="swslider"></span>
-</label>
-
-  Delete Objects (left click)
-</div>
+	</td>
+	<td>
+		<div class="tooltip">
+			Show Quasiparticles:
+			<span class="tooltiptext">
+				Changes how tetrahedra are rendered. Spinons live on the <i>original</i> tetrahedra;
+				visons on the <i>dual</i> tetrahedra.
+			</span>
+		</div>
+	<select id="quasi_dropdown" class="live">
+		<option value="all">Geometry</option>
+		<option value="spinons">Spinons</option>
+		<option value="visons">Visons</option>
+	</select>
 	</td>
 </tr>
 <tr>
@@ -93,7 +120,6 @@ Pyrochlore Opacity
 <div>
 
 Show system as <select id="geom_dropdown" class="live">
-
 	<option value="SpinIce">Spin Ice</option>
 	<option value="H2O">Water Ice</option>
 </select>
@@ -101,109 +127,129 @@ Show system as <select id="geom_dropdown" class="live">
 
 	</td>
 	<td>
-<div>
-<label class="switch">
-  <input type="checkbox" id='lightsaber_checkbox'>
-  <span class="swslider"></span>
-</label>
 
-  Lightsaber
-</div>
+		<div>
+	Temperature:
+  <input type="number" min="0.001" max="10" value="0.01" step="0.01" id="temp_box"
+  style="width:7em">
+	<span style="display:inline-block; width:10em" id="temp_unit_span"></span>
+  <!-- Log scale -->
+  <input type="range" min="-3" max="1" value="-2" step="0.01" class="slider" id="temp_slider"> </input>
+		</div>
 	</td></tr>
 
 <tr>
 	<td>
-<!--
 		<div>
-Show Pyrochlore Lattice as <select id="pyro_dropdown" class="live">
-	<option value="Spheres">Spheres</option>
-	<option value="Arrows">Arrows</option>
-		</div> -->
-		<div>
-			 Classical Spin Ice,
-			$T/J_{zz}$ =
-  <input type="number" min="0.01" max="10" value="0.01" class="live" step="0.01" id="temp_slider"
-  style="width:5em">
+			 Classical Spin Ice
 <button type="button" id="simulate_button" style="width:10em">Simulate</button>
 		</div>
 	</td>
 	<td>
 		Initialise to ordered state <select id="order_dropdown">
-			<option value="AIAO">AIAO</option>
-			<option value="3I1O/1I3O">Spinon Crystal</option>
-			<option value="2I2O">Spin Ice</option>
+			<option value="AIAO">[CSI] AIAO</option>
+			<option value="3I1O/1I3O">[CSI] Spinon Crystal</option>
+			<option value="2I2O">[CSI] 2 in, 2 out</option>
+			<option value="Random">[CSI] Random Ising</option>
+			<option value="XY">[QSI] Vison Free</option>
 		</select>
 		 <button type="button" id="order_set">Set</button> 
 	</td>
 </tr>
-<tr><td>
+<tr>
+	<td>
 		<div>
-			Tick Rate: <input type="number" id="tickrate_display" style="width:5em"></input>$s^{-1}$
-  <input type="range" min="1" max="100" value="10" class="live slider" step="1" id="trate_slider"> 
+			Semiclassical Quantum Spin Ice <button type="button" id="qsi_simulate_button"
+				style="width:10em" visible=false>Simulate</button> 
 		</div>
 	</td>
+
 	<td>
-
-
+		<div>
+			Tick Rate: <input type="number" id="tickrate_display"
+											style="width:5em", value="10"></input>$s^{-1}\text{spin}^{-1}$
+  <input type="range" min="1" max="100" value="10" class="slider" step="1" id="trate_slider"> 
+		</div>
 	</td>
 </tr>
 </table>
 
-<div id='3D_TARGET' style="margin-top:2em;height:80vh"></div>
+<div style="margin-top:2em;height:80vh">
+	<div id='3D_TARGET' style="margin-top:2em;height:80vh"></div>
+	<div style="display:inline-block; width:20em; position:relative; top:-79vh; padding-left:1em;">
+		Energy: <span id="energy_span", style="display:inline-block; width:10em"></span> <br>
+		<span id="g_span"></span>
+	</div>
+
+</div>
 
 
 
 
 
-
-
-
-<h1>Okay, but why?</h1>
+<h1>Classical Spin Ice</h1>
 <p>
-The point of this is to figure out the index convention for the pyrochlore lattice, so will likely
-not be particularly thrilling for anyone except for me.
-</p>
-<p>
-The gist of it is this: The pyrochlore lattice can be viewed as the intersitial lattice formed by
-the bonds of the diamond lattice. The pyrochlore itself can be viewed as having four sublattices,
-corresponding to the four corners of the 'A', i.e. light green, tetrahedra. The diamond lattices are
-bipartite, and is appropriately coloured in two shades of green/purple.
-</p>
-<p>
-A peculiarity of the pyrochlore lattice is that the centers of its hexagonal plaquettes (grey) form another pyrochlore
-lattice, with associated diamond lattice shown in purple.
-</p>
-<p>
-The indexing scheme used internally is
-```
-cubic site -> fcc sublattice -> pyrochlore sublattice
-```
+This is a direct analogue of the water ice originally identified by Pauling 
+<a href="https://doi.org/10.1021/ja01315a102">(1935)</a> as having a residual entropy at zero
+temperature. Spins are Ising-like, i.e. they may only
+point up or down, rendering this a purely classsical model - all of the $\sigma^z$'s commute. The
+Hamiltonian is
 
-This relies on the fact that all 'A' sites of the diamond lattice form an FCC lattice, which is much
-easier to conceptualise than the primitive unit cell. In particular, one can see that tiling out a
-single pyrochlore tetrahedron across all of the FCC sites (light green) will generate the full
-lattice.
-</p>
+$H = \sum_{\langle ij \rangle} J_{A/B}^{zz} S^z_i S^z_j.$
 
-<p>
-The highly nontrivial thing here is how to index the neighbour pyrochlore sites of a given
-plaquette, which is what the 'Annotate plaquettes' option is used for. In particular, every
-plaquette may be given an orientation using the "A* to B*" (i.e. light purple to dark purple) vectors.
-The choice of where to start indexing is not arbitrary: half of the pyrochlore sites represent "A to
-B" (i.e. light green to dark green) sites, the other half are "B to A"; see below (read the hexagon
-as being in plane, the dark green sites above the plane, and the light green as behind the plane)
-<br />
-<img src="../assets/plaquette_orientation.svg"></img>
-</p>
+where the couplings $J_{A/B}$ are $J_A$ ($J_B$) if the bond is an edge of a pale green (dark green) tetrahedron. 
+Depending on the breahting anisotropy you set, either the $A$ or $B$ tetrahedra will
+become bigger; by default they are the same size.
 
-<p>
-The convention used here <code>[R Y G C B P] = [0 1 2 3 4 5]</code> is such that the even members
-red, green and blue point to "A to B" pyrochlore sites. (note that a site is only "A to B" <i>relative
-to a plaquette</i>, it cannot be a global classification because the pyrochlore lattice is not
-bipartite). This matters if your Hamiltonian treats the A and B sites as distinct, which they are on
-the breathing pyrochlore lattice.
-</p>
+The 'Classical Spin Ice' simulation performs Metropolis steps on this Hamiltonian at the specified
+temperature. Tetrahedra are coloured red/blue to distinguish postive
+and negative <it>spinons</it>. To see what the Monte Carlo spinon dynamics are, all you need to do
+is
 
+<ol>
+	<li> Set the order to 'All In, All Out' (AIAO)
+	<li> Click 'Simulate' on the Classical Spin Ice tab.
+</ol>
+
+You should see a mess of initial spinons, which all eventually anneal out to a small handful that
+persist for long times. This is a signature of topological protection - an isolated spinon cannot be
+removed from the system by local spin flips, it must wander and collide with an anti-spinon to be
+removed. In this sense, we have recovered behaviour reminiscent of high energy particle physics,
+with its particle-antipartcle pairs that are locally stable unless annihilated.
+
+This model does a very good job at describing the rare-earth compounds
+<a href=https://www.nature.com/articles/20619/>Dy<sub>2</sub>Ti<sub>2</sub>O<sub>7</sub></a> and 
+<a href=10.1103/PhysRevLett.87.047205>Ho<sub>2</sub>Ti<sub>2</sub>O<sub>7</sub></a>,
+and 'spin ice physics' (i.e. the emergence of <a href="https://www.nature.com/articles/nature06433">classical quasiparticles</a> from geometrically frustrated
+Ising models) is now known to be relevant in <a href="https://arxiv.org/abs/0912.4531v1">a vast
+assortment of other materials</a>. 
+
+In the simple model presented here, spinons move diffusively - squinting one's eyes, they are
+executing a 3D random walk. This is a significant departure from the behaviour of a billiard-ball
+like 'particle'.
+
+<h1>Quantum Spin Ice</h1>
+
+This classical statistical mechanics description is missing something - when running Monte Carlo we
+randomly choose to flip spins, but we have completely ignored the question of how they come to flip
+in the first place. Supose that we add a small non-commuting hopping term to the Hamiltonian
+
+$H = \sum_{\langle ij \rangle} J_{A/B}^{zz} S^z_i S^z_j + \frac{1}{2}J_{A/B}^\perp (S^+_i S^-_j + S^-_iS^+_j).$
+
+By doing this, we generate uncertainty in the $S^z$ field, and imbue it with coherent, quantum
+dynamics.
+
+
+
+
+<h2>To-Do</h2>
+<ul>
+	<li>Better visualisation of e-magnetic fields </li>
+	<li>Interactive spin-flipping to create and transport spinons </li>
+	<li>As above, but for vison creation and transport [difficult...]</li> 
+</ul>
+
+<h2> Debug </h2>
 
 <div>
 <label class="switch">
@@ -222,6 +268,27 @@ the breathing pyrochlore lattice.
 
   Annotate Plaquettes (right click)
 </div>
+
+
+<div>
+<label class="switch">
+  <input type="checkbox" id='lightsaber_checkbox'>
+  <span class="swslider"></span>
+</label>
+
+  Lightsaber
+</div>
+
+<div class="tooltip">
+  Delete Objects (left click)
+  <span class="tooltiptext">
+	  Permanently deletes elements. (Will break any running simulations!)
+  </span>
+</div>
+<label class="switch">
+  <input type="checkbox" id='delete_checkbox'>
+  <span class="swslider"></span>
+</label>
 
 <script>
 {% include_relative js/diamond.js %}

@@ -1,3 +1,20 @@
+// Maths
+//
+
+
+
+// Standard Normal variate using Box-Muller transform.
+function gaussianRandom(mean=0, stdev=1) {
+    let u = 1 - Math.random(); //Converting [0,1) to (0,1)
+    let v = Math.random();
+    let z = Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
+    // Transform to the desired mean and standard deviation:
+    return z * stdev + mean;
+}
+
+
+
+
 // Geometry
 
 let direction = {}
@@ -95,11 +112,6 @@ for (let ssl = 0; ssl < 4; ssl++){
 }
 
 
-
-
-
-
-
 const fcc_coords = {'Dy': direction.fcc_Dy, 'Ti': direction.fcc_Ti};
 
 // Global variables
@@ -112,25 +124,34 @@ let Nz=1;
 let unitcells = []
 
 // the parent
-let mum = document.getElementById('3D_TARGET'); 
+const mum = document.getElementById('3D_TARGET'); 
 
 // Assets
 
-let materialsA = {
+const materialsA = {
 		'Dy':  {color: 0x9cc968, flatShading: false, transparent: true} ,
 		'Ti':  {color: 0x9568c9, flatShading: false, transparent: true} 
 }
 
-let materialsB = {
+const materialsB = {
 		'Dy':  {color: 0x638003, flatShading: false, transparent: true} ,
 		'Ti':  {color: 0x604350, flatShading: false, transparent: true} 
 }
 
-let materials_pyro = {
+const materials_pyro = {
 		'Dy':  {color: 0x040404, flatShading: false, transparent: true},
 		'Ti':  {color: 0x888888, flatShading: false, transparent: true, side: THREE.DoubleSide} 
 }
 
+const posSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0xab5640,  flatShading: false, transparent: true} );
+const negSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0x4095ab, flatShading: false, transparent: true } );
+const posposSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0xab2300, flatShading: false, transparent: true } );
+const negnegSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0x000bab, flatShading: false, transparent: true } );
+
+
+const posVisonMaterial = new THREE.MeshPhongMaterial( { color: 0x9a3fc1, flatShading: false, transparent: true } );
+const negVisonMaterial = new THREE.MeshPhongMaterial( { color: 0x3fc19a, flatShading: false, transparent: true } );
+const piVisonMaterial = new THREE.MeshPhongMaterial( { color: 0xaaaaaa, flatShading: false, transparent: true } );
 
 
 // Create Scene and lights
@@ -317,8 +338,8 @@ function construct_arrow_geometry(length, stem_radius=null, head_radius=null, he
 	return new THREE.LatheGeometry( points , 13 );
 }
 
-const arrow3d_shape = construct_arrow_geometry(1, 0.1, 0.2, 0.2);
-const spin_arrow_shape = construct_arrow_geometry(1, 0.1, 0.2, 0.2, true);
+const arrow3d_shape = construct_arrow_geometry(1, 0.1, 0.3, 0.2);
+const spin_arrow_shape = construct_arrow_geometry(1, 0.2, 0.4, 0.4, true);
 
 
 function construct_hexagon_shape(subl){
@@ -381,14 +402,16 @@ function v3_mul(a, v){
 
 const v0 = new THREE.Vector3(0,1,0);
 
-function set_spin_direction(s, v){
+function set_spin_direction(s){
 // v should be Vector3	
-	let u = v.clone()
+	let u = s.heis_moment.clone()
 	u.applyMatrix3(direction.axis[s.subl]);
 	u.normalize();
 	s.quaternion.setFromUnitVectors( v0,  u );
-	s.heis_moment = v.clone();
 }
+
+
+
 
 function construct_qsi(){
 
@@ -411,7 +434,8 @@ function construct_qsi(){
 						spin.plaqs = [];
 						spin.parent_tet = {};
 						spin.position.set(...pos);
-						set_spin_direction(spin, new THREE.Vector3(0,0,1));
+						spin.heis_moment = new THREE.Vector3(0,0,1);
+						set_spin_direction(spin);
 						
 						spin.fcc_parent = [...fcc_r];
 						
@@ -477,9 +501,9 @@ function construct_qsi(){
 			r[2] = p.position.z + direction.plaqt[p.subl][j][2];
 			r = r.map(xi => Math.round(xi));
 			s = spin_at(r);
-			s.plaqs.push(p);
-			p.spins.push(s);
-			p.spin_neighbour.push(new THREE.Vector3(...direction.plaqt[p.subl][j]))
+			s.plaqs[j] = p;
+			p.spins[j] = s;
+			p.spin_neighbour[j] = (new THREE.Vector3(...direction.plaqt[p.subl][j]))
 		}
 	}
 
@@ -507,13 +531,14 @@ function construct_qsi(){
 
 	qsi.m_ptetra.forEach( s=> {
 		s.plaqs = [];
+
+		let mult = 1 - 2*s.subl;
 		for (let ssl=0; ssl<4; ssl++) {
 			let r = [];
-			r[0] = s.position.x + direction.pyro[ssl][0];
-			r[1] = s.position.y + direction.pyro[ssl][1];
-			r[2] = s.position.z + direction.pyro[ssl][2];
+			r[0] = s.position.x + mult*direction.pyro[ssl][0];
+			r[1] = s.position.y + mult*direction.pyro[ssl][1];
+			r[2] = s.position.z + mult*direction.pyro[ssl][2];
 
-			r = v3_sub(r, direction.diamond[s.subl] );
 			r = r.map(xi => Math.round(xi));
 			p = plaq_at(r);
 			s.plaqs.push(p);
@@ -526,6 +551,7 @@ function construct_qsi(){
 
 			
 }
+
 
 function delete_qsi(){
 	qsi.m_spin.forEach((s) => {
@@ -555,25 +581,27 @@ function delete_qsi(){
 }
 
 
+
 //////////////////////////////////////////////////////////////////////////
 // Physics implementation
 
 // energy of the six bonds linked to spin s
-function loc_field(s) {
-	let m = 0
+function csi_loc_field(s) {
+	let mA = 0;
+	let mB = 0;
 	ssl = s.subl;
 
 	let tA = s.parent_tet[0];
 	let tB = s.parent_tet[1];
 
-	m += tA.spin_t[(ssl+1)%4].heis_moment.z;
-	m += tA.spin_t[(ssl+2)%4].heis_moment.z;
-	m += tA.spin_t[(ssl+3)%4].heis_moment.z;
-	m += tB.spin_t[(ssl+1)%4].heis_moment.z;
-	m += tB.spin_t[(ssl+2)%4].heis_moment.z;
-	m += tB.spin_t[(ssl+3)%4].heis_moment.z;
+	mA += tA.spin_t[(ssl+1)%4].heis_moment.z;
+	mA += tA.spin_t[(ssl+2)%4].heis_moment.z;
+	mA += tA.spin_t[(ssl+3)%4].heis_moment.z;
+	mB += tB.spin_t[(ssl+1)%4].heis_moment.z;
+	mB += tB.spin_t[(ssl+2)%4].heis_moment.z;
+	mB += tB.spin_t[(ssl+3)%4].heis_moment.z;
 
-	return m;
+	return mA*QSI_PARAMS.JzzA + mB*QSI_PARAMS.JzzB;
 }
 
 
@@ -581,21 +609,20 @@ const up = new THREE.Vector3(0,0,1);
 const dn = new THREE.Vector3(0,0,-1);
 
 function csi_mc_step(){
-	for (let j=0; j < Nx*Ny*Nz*CSI_PARAMS.sweep_step; j++){
+
+	for (let j=0; j < Nx*Ny*Nz*QSI_PARAMS.sweep_step; j++){
 		let s = qsi.m_spin[Math.floor(Math.random()*qsi.m_spin.length)];
 		// propose a flip
-		const Jzz = 1;
 		
-		let dE = -2*Jzz*loc_field(s)*s.heis_moment.z;
+		let dE = -2*csi_loc_field(s)*s.heis_moment.z;
 	
-		if ( Math.random() < Math.exp( - dE/CSI_PARAMS.temperature) ) {
-			if (s.heis_moment.z > 0 ){
-				set_spin_direction(s, dn);
-			} else {
-				set_spin_direction(s, up);
-			}
+		if ( Math.random() < Math.exp( - dE/QSI_PARAMS.temperature) ) {
+			s.heis_moment.z = (s.heis_moment.z == 1) ? -1 : 1;
+			set_spin_direction(s);
 		}
 	}
+
+	//
 }
 
 
@@ -608,34 +635,292 @@ function tet_charge(t){
 		return Q;
 }
 
+const spinon_tol = 0.0001;
+
 function colour_spinons(){
 	qsi.m_tetra.forEach( t => {
 		
+		let op = t.material.opacity;
+		
 		let Q = tet_charge(t);	
-		if (Q > 2.1) {
+		if (Q > 2+spinon_tol) {
 			t.material = posposSpinonMaterial;
 			t.visible = true;
-		} else if (Q > 0.1) {
+		} else if (Q > spinon_tol ) {
 			t.material = posSpinonMaterial;
 			t.visible = true;
-		} else if (Q < -2.1) {
+		} else if (Q < -2-spinon_tol) {
 			t.material = negnegSpinonMaterial;
 			t.visible = true;
-		} else if (Q < -0.1) {
+		} else if (Q < -spinon_tol ) {
 			t.material = negSpinonMaterial;
 			t.visible = true;
 		} else {
 			t.visible = false;
 		}
+		t.material.opacity=op;
 
-	});
-	
+	});	
 }
 
-CSI_PARAMS = {
+
+
+function plaq_arg(p) {
+
+	let vp= cplx_mul(
+				cplx_mul(
+			cplx_mul_star(
+				p.spins[0].heis_moment,
+					p.spins[1].heis_moment
+			),
+			cplx_mul_star(
+				p.spins[2].heis_moment,
+					p.spins[3].heis_moment
+			)),
+					cplx_mul_star(
+				p.spins[4].heis_moment,
+					p.spins[5].heis_moment
+					)
+			);
+			return Math.atan2( vp.y, vp.x);
+}
+
+function ptet_charge(t){
+		let Q = 0;
+		t.plaqs.forEach( p => {
+			Q += plaq_arg(p);
+		});
+		Q *= ((t.subl == 0) ? 1 : -1);
+		return Q;
+}
+
+const vison_tol = 0.00001;
+
+function colour_visons(){
+	qsi.m_ptetra.forEach( t => {
+		let op = t.material.opacity;
+		let Q = ptet_charge(t);
+		if (Math.abs(Q) > 2*Math.PI + vison_tol) {
+			t.material = piVisonMaterial;
+			t.visible = true;
+		} else if (Q > vison_tol ) {
+			t.material = posVisonMaterial;
+			t.visible = true;
+		} else if (Q < -vison_tol) {
+			t.material = negVisonMaterial;
+			t.visible = true;
+		} else {
+			t.visible = false;
+		}
+		t.material.opacity = op;
+	});
+}
+
+QSI_PARAMS = {
 	'tick_interval': 100,
 	'temperature': 0.01,
-	'sweep_step': 1
+	'sweep_step': 1,
+	'JzzA': 1,
+	'JzzB': 1,
+	'g_cplx': {'x': 1, 'y': 0}
+}
+
+
+//////////////////////////////////////////////////////////////
+// Quantum Spin Ice Semiclassics
+//
+//
+//
+
+// zw
+
+function cplx_mul(z, w) {
+	let t= {'x': z.x * w.x - z.y * w.y, 'y': z.x*w.y + z.y*w.x};
+	// if (isNaN(t.x) || isNaN(t.y)) { throw "Bad Mult" }
+	return t;
+}
+
+// z w*
+function cplx_mul_star(z, w) {
+	let t= {'x': z.x * w.x + z.y *w.y, 'y': -z.x*w.y + z.y*w.x}
+	// if (isNaN(t.x) || isNaN(t.y)) { throw "Bad Mult" }
+	return t;
+}
+
+function v2_add(u ,v) {
+	u.x += v.x;
+	u.y += v.y;
+}
+
+function qsi_loc_field(s){
+	let h = {'x':0, 'y':0};
+	for (let i=0; i<6; i++){
+		let neighb_spins = s.plaqs[i].spins;
+		let tmp = cplx_mul(
+			cplx_mul_star(
+				neighb_spins[(i+1)%6].heis_moment,
+					neighb_spins[(i+2)%6].heis_moment
+			),
+			cplx_mul_star(
+				neighb_spins[(i+3)%6].heis_moment,
+					neighb_spins[(i+4)%6].heis_moment
+			)
+		)
+		tmp = cplx_mul(tmp, neighb_spins[(i+5)%6].heis_moment);
+		tmp = (i%2 == 1 ) ? cplx_mul(tmp, QSI_PARAMS.g_cplx) : cplx_mul_star(tmp, QSI_PARAMS.g_cplx);
+		v2_add(h, tmp);
+	}
+	return h;
+}
+
+
+function propose_Ising(){
+	let stdev = 0.25*Math.sqrt(QSI_PARAMS.temperature);
+	if (stdev > 0.5) stdev = 0.5;
+	return gaussianRandom(mean=0, stdev=stdev);
+}
+
+
+function plaq_energy(p){
+	return -cplx_mul(
+		cplx_mul(
+		cplx_mul_star(
+			p.spins[0].heis_moment,
+			p.spins[1].heis_moment
+		),
+		cplx_mul_star(
+			p.spins[2].heis_moment,
+			p.spins[3].heis_moment
+		)
+		),
+		cplx_mul(
+		cplx_mul_star(
+			p.spins[4].heis_moment,
+			p.spins[5].heis_moment
+		), QSI_PARAMS.g_cplx)
+	).x;
+}
+
+function qsi_mc_step() {
+
+	//qsi_mc_gauge()	
+	let n_step = Nx*Ny*Nz*QSI_PARAMS.sweep_step;
+	qsi_mc_XY(n_step);
+	qsi_mc_ising(n_step);
+}
+
+
+function qsi_mc_gauge(){
+	// gauge everyone
+	//
+
+	qsi.m_tetra.forEach( t => {
+		let theta = Math.random()*2*Math.PI;
+		t.spin_t.forEach( s => {
+			s.heis_moment.applyAxisAngle(up,theta);
+		});
+	});
+
+}
+
+function qsi_mc_ising(n_step){
+	
+
+	// Ising step
+	for (let j=0; j < n_step; j++){
+		let p = qsi.m_plaq[Math.floor(Math.random()*qsi.m_plaq.length)];
+		let delta_z = propose_Ising();
+		let reject = false;
+		let old_heis = [];
+		let old_E = plaq_energy(p);
+
+		for (let j=0; j<6; j++) {
+			let s = p.spins[j];
+			old_heis.push(s.heis_moment.clone());
+
+			let z_new = s.heis_moment.z + delta_z;
+			if ( Math.abs(z_new) > 1.0 ) {
+				reject = true;
+				break;
+			}
+			let rho2 = (s.heis_moment.x*s.heis_moment.x + s.heis_moment.y*s.heis_moment.y);
+			
+			let d = Math.sqrt( (1-z_new*z_new) );
+			let theta = Math.atan2(s.heis_moment.y,s.heis_moment.x);
+			s.heis_moment.x = d * Math.cos(theta);
+			s.heis_moment.y = d * Math.sin(theta);
+			s.heis_moment.z = z_new;
+
+			delta_z = -delta_z; // Alternate tilt around a plaquette
+		}
+
+		// Check new energy
+		if (!reject) {
+			let dE = plaq_energy(p) - old_E;
+			if ( dE > 0 && Math.exp( - dE/QSI_PARAMS.temperature) < Math.random()) {
+				reject=true;
+			}
+		}
+
+		if (reject) {
+			// Fix all the heisenberg moments
+			//
+			for (let i=0; i<old_heis.length; i++) {
+				p.spins[i].heis_moment = old_heis[i];
+			}
+		} 
+
+			
+		
+	}
+}
+
+function qsi_mc_XY(n_step){
+
+	// XY Step
+	for (let j=0; j < n_step; j++){
+		// choose a random spin
+		let s = qsi.m_spin[Math.floor(Math.random()*qsi.m_spin.length)];
+
+
+		let theta = gaussianRandom(mean=0, stdev=Math.sqrt(QSI_PARAMS.temperature)*0.5);
+		rot = { "x": Math.cos(theta), "y": Math.sin(theta) }
+		rot.x -= 1;
+		
+		let dE = -cplx_mul(
+			cplx_mul_star(qsi_loc_field(s), s.heis_moment),
+			rot ).x;
+
+	
+		if ( dE < 0 || Math.random() < Math.exp( - dE/QSI_PARAMS.temperature) ) {
+			s.heis_moment.applyAxisAngle( up, -theta );
+		}
+	}
+
+
+}
+
+
+qsi.energy_qsi = () => {
+	let E = 0;
+	qsi.m_plaq.forEach( p =>{
+		E += plaq_energy(p);
+	});
+	return E/(qsi.m_plaq.length);
+}
+
+qsi.energy_csi = () => {
+	let E = 0;
+	const J = [QSI_PARAMS.JzzA, QSI_PARAMS.JzzB];
+	qsi.m_tetra.forEach( (t, i) =>{
+		for (let j=0; j<4; j++){
+			let sz = t.spin_t[j].heis_moment.z;
+			for (let i=j+1; i<4; i++){
+				E +=  J[i%2]*sz*t.spin_t[i].heis_moment.z;
+			}
+		}
+	});
+	return E/(qsi.m_spin.length);
 }
 
 /*
@@ -730,6 +1015,24 @@ function reset_plaqs(){
 }
 
 
+function reset_tetra() {
+	qsi.m_tetra.forEach( t =>{
+		let op = t.material.opacity;
+		t.material = new THREE.MeshPhongMaterial(t.subl === 0 ? materialsA['Dy'] : materialsB['Dy']);
+		t.material.opacity=op;
+		t.visible=true;
+	});
+
+	qsi.m_ptetra.forEach( t =>{
+		let op = t.material.opacity;
+		t.material = new THREE.MeshPhongMaterial(t.subl === 0 ? materialsA['Ti'] : materialsB['Ti']);
+		t.material.opacity=op;
+		t.visible=true;
+	});
+}
+
+
+
 function render() {
 	
 	raycaster.setFromCamera( pointer, camera );
@@ -768,9 +1071,26 @@ function render() {
 function animate() {
     controls.update();
 	render();
-	if (CSI_PARAMS.timeoutID != undefined){
-		colour_spinons();
+
+	//update spins to point the right way
+	qsi.m_spin.forEach( s => {
+		set_spin_direction(s)
+	});
+
+
+	// colour the spinons and visons
+	if (QSI_PARAMS.render !== undefined) {
+		QSI_PARAMS.render();
 	}
+	const espan = document.getElementById('energy_span');
+
+	if (QSI_PARAMS.qsi_timeoutID !== undefined) {
+		espan.innerHTML = Math.round(qsi.energy_qsi()*10000)*1.0/10000 + "<span style=\"float:right;\" >|g+ig'|</span>";
+	} else if (QSI_PARAMS.timeoutID !== undefined) {
+		espan.innerHTML = Math.round(qsi.energy_csi()*10000)*1.0/10000 +"<span style=\"float:right;\" >(J<sub>A</sub>+J_<sub>B</sub>)/2</span>";	
+	}
+
+
     requestAnimationFrame(animate);
 };
 
@@ -792,16 +1112,13 @@ function onPointerMove( event ) {
 	pointer.y = - ( (event.clientY-rect.top) / rect.height ) * 2 + 1;
 }
 
-function update_materials(which, op) {
+function update_opacity(which, op) {
 	qsi[which].forEach((t)=>{
 		t.material.opacity=op;
-		if (op ==0) {
-			t.visible=false;
-		} else {
-			t.visible=true;
-		}
 	});
 }
+
+
 
 function update_scaling(scale) {
 
@@ -811,9 +1128,9 @@ function update_scaling(scale) {
 		if (t.subl == 0) {
 			t.scale.set(1+s,1+s,1+s);
 		}
-		else if (t.subl == 'B') 
+		else if (t.subl == 1) 
 		{
-			t.scale.set(1-s,1-s,1-s);
+			t.scale.set(1-s, 1-s, 1-s);
 		}
 	});
 	qsi['m_spin'].forEach((spin)=>{
@@ -825,7 +1142,7 @@ function update_scaling(scale) {
 		if (t.subl == 0) {
 			t.scale.set(1+s,1+s,1+s);
 		}
-		else if (t.subl == 'B') 
+		else if (t.subl == 1) 
 		{
 			t.scale.set(1-s,1-s,1-s);
 		}
@@ -837,6 +1154,25 @@ function update_scaling(scale) {
 		let ss = Math.min(1-s, 1+s);
 		spin.scale.set(ss,ss,ss);
 	});
+
+	QSI_PARAMS.JzzA = 1 - scale/2;
+	QSI_PARAMS.JzzB = 1 + scale/2;
+
+	QSI_PARAMS.g_cplx = {'x':Math.cos(scale*Math.PI/2) , 'y':Math.sin(scale*Math.PI/2)};
+
+
+	const g_units = document.getElementById("g_span");
+
+	if (QSI_PARAMS.timeoutID !== undefined){
+		// CSI
+		g_units.innerHTML = "CSI, J<sub>A</sub>-J<sub>B</sub>="+ scale
+	} else if (QSI_PARAMS.qsi_timeoutID !== undefined){
+		// QSI
+		g_units.innerHTML = "QSI, g= "+ Math.round(1000*QSI_PARAMS.g_cplx.x)/1000+", g'= " + Math.round(1000*QSI_PARAMS.g_cplx.y)/1000;
+	} else {
+		g_units.innerHTML = '';
+	}
+
 
 }
 
@@ -891,7 +1227,7 @@ function handleClick(e) {
 }
 
 
-
+// constants
 
 
 
@@ -911,11 +1247,6 @@ colors.forEach(
 	(c)=>{lineMaterials.push(new THREE.MeshPhongMaterial( { color: c} ))
 });
 
-const posSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0xab5640 } );
-const negSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0x4095ab } );
-const posposSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0xab2300 } );
-const negnegSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0x000bab } );
-
 // Start the program
 document.addEventListener("DOMContentLoaded",function () {
 
@@ -925,11 +1256,16 @@ document.addEventListener("DOMContentLoaded",function () {
     init();
     animate();
 
-	document.getElementById('Dy_slider').oninput = function() {update_materials("m_tetra", this.valueAsNumber/100)} ;
-	document.getElementById('Ti_slider').oninput = function(){update_materials("m_ptetra", this.valueAsNumber/100)} ;
-	document.getElementById('pyro_Dy_slider').oninput = function(){update_materials("m_spin", this.valueAsNumber/100)} ;
-	document.getElementById('pyro_Ti_slider').oninput = function(){update_materials("m_plaq", this.valueAsNumber/100)} ;
+	const Dy_slider = document.getElementById('Dy_slider');
+	const Ti_slider = document.getElementById('Ti_slider');
+	document.getElementById('pyro_Dy_slider').oninput = function(){update_opacity("m_spin", this.valueAsNumber/100)} ;
+	document.getElementById('pyro_Ti_slider').oninput = function(){update_opacity("m_plaq", this.valueAsNumber/100)} ;
 	document.getElementById('breathing_slider').oninput = function(){update_scaling(this.valueAsNumber/100)} ;
+
+
+	Dy_slider.oninput = function() {update_opacity("m_tetra", this.valueAsNumber/100)} ;
+	Ti_slider.oninput = function() {update_opacity("m_ptetra", this.valueAsNumber/100)} ;
+
 	document.getElementById('system-size').onchange = function(){
 		if (this.valueAsNumber < 0 || this.valueAsNumber > 6) return;
 		Nx = this.valueAsNumber;
@@ -937,6 +1273,8 @@ document.addEventListener("DOMContentLoaded",function () {
 		Nz = this.valueAsNumber;
 		delete_qsi();
 		construct_qsi();
+		document.getElementById('order_set').onclick(); // set the order
+
 		for (slider of document.querySelectorAll('.live')){
 			slider.oninput();
 		}
@@ -961,20 +1299,20 @@ document.addEventListener("DOMContentLoaded",function () {
 	document.getElementById('geom_dropdown').oninput = function() { 
 		if (this.value == "SpinIce") {
 			qsi.m_tetra.forEach( t => {
-				t.geometry = (t.subl === 0) ? tetraA_shape : tetraB_shape;
+				t.geometry = (t.subl==0)?tetraA_shape:tetraB_shape;
 			});
 			qsi.m_ptetra.forEach( t => {
-				t.geometry = (t.subl === 0) ? tetraA_shape : tetraB_shape;
+				t.geometry = (t.subl==0)?tetraA_shape:tetraB_shape;
 			});
 			qsi.m_spin.forEach( s => {
 				s.geometry = spin_arrow_shape;
 			});
 		} else {	
 			qsi.m_tetra.forEach( t => {
-				t.geometry = bigsphere_shape
+				t.geometry = bigsphere_shape;
 			});
 			qsi.m_ptetra.forEach( t => {
-				t.geometry = bigsphere_shape
+				t.geometry = bigsphere_shape;
 			});
 			qsi.m_spin.forEach( s => {
 				s.geometry = pyro_sphere_shape;
@@ -984,55 +1322,170 @@ document.addEventListener("DOMContentLoaded",function () {
 
 
 	// Representation of pyrochlore sublattice
-	document.getElementById('order_set').onclick = function() { 
-		that = document.getElementById('order_dropdown');
-		if (that.value == "AIAO") {
+	const orderset_dropdown =  document.getElementById('order_dropdown');
+	const orderset_button = document.getElementById('order_set');
+	orderset_button.onclick = function() { 
+		if (orderset_dropdown.value == "AIAO") {
 			qsi.m_spin.forEach( s =>{
-				set_spin_direction(s, new THREE.Vector3(0,0,1));
+				s.heis_moment = new THREE.Vector3(0,0,1);
 			});
-		} else if (that.value == "2I2O") {
+		} else if (orderset_dropdown.value == "2I2O") {
 			qsi.m_spin.forEach( s => {
-				let sz =  (s.subl % 2 == 0) ? 1 : -1;
-				set_spin_direction(s, new THREE.Vector3(0,0,sz));
+				s.heis_moment.x = 0;
+				s.heis_moment.y = 0;
+				s.heis_moment.z = (s.subl % 2 == 0) ? 1 : -1;
 			});
-		} else { // 3I 1O order
+		} else if (orderset_dropdown.value == "3I1O/1I3O") { // 3I 1O order
 			qsi.m_spin.forEach( s => {
-				let sz =  (s.subl == 0) ? -1 : 1;
-				set_spin_direction(s, new THREE.Vector3(0,0,sz));
+				s.heis_moment.x = 0;
+				s.heis_moment.y = 0;
+				s.heis_moment.z = (s.subl == 0) ? -1 : 1;
+			});
+		} else if (orderset_dropdown.value == "Random") {
+			qsi.m_spin.forEach( s => {
+				s.heis_moment.x = 0;
+				s.heis_moment.y = 0;
+				s.heis_moment.z = Math.random() < 0.5 ? -1 : 1 ;
+			});
+		} else {
+			qsi.m_spin.forEach( s => {
+				s.heis_moment.x = 1;
+				s.heis_moment.y = 0;
+				s.heis_moment.z = 0;
 			});
 		}
-		colour_spinons();
+
+		qsi.m_spin.forEach( s => {	
+			set_spin_direction(s);
+		});
 	};
 
-	
-	// CSI simulator
-	document.getElementById("simulate_button").onclick = function() {
-		if (this.innerHTML == "Simulate"){
-			this.innerHTML = "Stop Simulation";
-			CSI_PARAMS.timeoutID = setInterval(csi_mc_step, CSI_PARAMS.tick_interval);
 
-			
-		} else {
-			this.innerHTML = "Simulate";
-			
+	const quasi_dropdown = document.getElementById("quasi_dropdown");
+	quasi_dropdown.oninput = function() {
+		reset_tetra();
+		if (this.value === "spinons") {
+			QSI_PARAMS.render = colour_spinons;
+			qsi.m_ptetra.forEach( s => {s.visible=false;});
+			// make them visible if they aren't already
+			if (Dy_slider.value == "0"){
+				Dy_slider.value = 100;
+				Dy_slider.oninput();
+			}
 
-			clearInterval(CSI_PARAMS.timeoutID);
-			CSI_PARAMS.timeoutID = undefined;
+
+		} else if (this.value === "visons") {
+			QSI_PARAMS.render = colour_visons;
+			qsi.m_tetra.forEach( s => {s.visible=false;});
+
+			if (Ti_slider.value == "0"){
+				Ti_slider.value = 100;
+				Ti_slider.oninput();
+			}
+		} else /* assume value is 'all' or similar */ {	
+			QSI_PARAMS.render = undefined;
 		}
 	}
 
-	document.getElementById("temp_slider").oninput = function() {
-		CSI_PARAMS.temperature = this.valueAsNumber;
+	// CSI simulator
+	//
+	//
+	const csi_button = document.getElementById("simulate_button");
+	const qsi_button = document.getElementById("qsi_simulate_button"); 
+	const t_units = document.getElementById("temp_unit_span");
+
+	csi_button.onclick = function() {
+		if (this.innerHTML == "Simulate"){
+			qsi_button.disabled=true;
+			this.innerHTML = "Stop Simulation";
+
+			// Make sure that we can see what is happening!
+			quasi_dropdown.value="spinons";
+			quasi_dropdown.oninput();
+			// Set the units
+			t_units.innerHTML= "J";
+			QSI_PARAMS.timeoutID = setInterval(csi_mc_step, QSI_PARAMS.tick_interval);
+
+			document.getElementById('breathing_slider').oninput();
+
+		} else {
+			this.innerHTML = "Simulate";	
+			clearInterval(QSI_PARAMS.timeoutID);
+			QSI_PARAMS.timeoutID = undefined;
+
+			t_units.innerHTML= '(units)';
+			qsi_button.disabled=false;
+		}
 	}
+
+
+	// QSI simulator
+	qsi_button.onclick = function() {
+		if (this.innerHTML == "Simulate"){
+
+			csi_button.disabled=true;
+			// Set default values
+			if (orderset_dropdown.value != "XY"){
+				orderset_dropdown.value = "XY";
+				orderset_button.onclick();
+			}
+			orderset_dropdown.disabled=true;	
+			orderset_button.disabled=true;
+			// Make sure that we can see what is happening!
+			quasi_dropdown.value="visons";
+			quasi_dropdown.oninput();
+			// set the units
+			t_units.innerHTML="|g+ig'|";
+
+			this.innerHTML = "Stop Simulation";
+			QSI_PARAMS.qsi_timeoutID = setInterval(qsi_mc_step, QSI_PARAMS.tick_interval);
+
+
+			document.getElementById('breathing_slider').oninput();
+			
+		} else {
+			this.innerHTML = "Simulate";	
+			clearInterval(QSI_PARAMS.qsi_timeoutID);
+			QSI_PARAMS.qsi_timeoutID = undefined;
+
+			t_units.innerHTML= '(units)';
+			csi_button.disabled=false;
+			orderset_dropdown.disabled=false;	
+			orderset_button.disabled=false;
+		}
+	}
+
+
+	const t_min = 0.0000001;
+	const temp_box = document.getElementById("temp_box");
+	const temp_slider = document.getElementById("temp_slider");
+
+
+	temp_box.oninput = function() {
+		QSI_PARAMS.temperature = (this.valueAsNumber > t_min) ? this.valueAsNumber : t_min;
+		temp_slider.value=Math.log10(this.value);
+	}
+	temp_slider.oninput = function() {
+		temp_box.value=Math.round(100000*Math.pow(10,this.value))/100000;
+		temp_box.oninput();
+	}
+
 
 
 	function update_trate(rate_Hz) {
-		CSI_PARAMS.tick_interval = 1000/rate_Hz;
-		if (CSI_PARAMS.timeoutID != undefined){
-			clearInterval(CSI_PARAMS.timeoutID);
-			CSI_PARAMS.timeoutID = setInterval(csi_mc_step, CSI_PARAMS.tick_interval);
+		QSI_PARAMS.tick_interval = 1000/rate_Hz;
+		if (QSI_PARAMS.timeoutID != undefined){
+			clearInterval(QSI_PARAMS.timeoutID);
+			QSI_PARAMS.timeoutID = setInterval(csi_mc_step, QSI_PARAMS.tick_interval);
+		}
+
+		if (QSI_PARAMS.qsi_timeoutID != undefined){
+			clearInterval(QSI_PARAMS.qsi_timeoutID);
+			QSI_PARAMS.qsi_timeoutID = setInterval(qsi_mc_step, QSI_PARAMS.tick_interval);
 		}
 	}
+
+	
 
 	document.getElementById("trate_slider").oninput = function() {
 		document.getElementById("tickrate_display").value = this.valueAsNumber;
