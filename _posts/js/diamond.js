@@ -1087,7 +1087,7 @@ function animate() {
 	if (QSI_PARAMS.qsi_timeoutID !== undefined) {
 		espan.innerHTML = Math.round(qsi.energy_qsi()*10000)*1.0/10000 + "<span style=\"float:right;\" >|g+ig'|</span>";
 	} else if (QSI_PARAMS.timeoutID !== undefined) {
-		espan.innerHTML = Math.round(qsi.energy_csi()*10000)*1.0/10000 +"<span style=\"float:right;\" >(J<sub>A</sub>+J_<sub>B</sub>)/2</span>";	
+		espan.innerHTML = Math.round(qsi.energy_csi()*10000)*1.0/10000 +"<span style=\"float:right;\" >(J<sub>A</sub>+J<sub>B</sub>)/2</span>";	
 	}
 
 
@@ -1403,7 +1403,7 @@ document.addEventListener("DOMContentLoaded",function () {
 			quasi_dropdown.value="spinons";
 			quasi_dropdown.oninput();
 			// Set the units
-			t_units.innerHTML= "J";
+			t_units.innerHTML= "(J<sub>A</sub>+J<sub>B</sub>)/2";
 			QSI_PARAMS.timeoutID = setInterval(csi_mc_step, QSI_PARAMS.tick_interval);
 
 			document.getElementById('breathing_slider').oninput();
