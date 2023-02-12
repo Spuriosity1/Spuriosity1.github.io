@@ -326,7 +326,7 @@ function construct_arrow_geometry(length, stem_radius=null, head_radius=null, he
 	}	
 	const points = [];
 
-	let template = [[stem_radius, 0],[ stem_radius, length-head_len],[ head_radius, length-head_len],[0, length]];
+	let template = [[0,0],[stem_radius, 0],[ stem_radius, length-head_len],[ head_radius, length-head_len],[0, length]];
 
 	for (let xy of template){
 		if (centred === true){
