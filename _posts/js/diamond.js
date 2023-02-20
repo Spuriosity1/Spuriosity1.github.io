@@ -140,7 +140,7 @@ const materialsB = {
 
 const materials_pyro = {
 		//'Dy':  {color: 0xff0404, flatShading: false, transparent: true},
-		'Dy': {map: new THREE.TextureLoader().load("../assets/arrow.png")},
+		'Dy': {map: new THREE.TextureLoader().load("../assets/arrow.png"), transparent:true},
 		'Ti':  {color: 0x888888, flatShading: false, transparent: true, side: THREE.DoubleSide} 
 }
 
