@@ -139,14 +139,16 @@ const materialsB = {
 }
 
 const materials_pyro = {
-		'Dy':  {color: 0x040404, flatShading: false, transparent: true},
+		//'Dy':  {color: 0xff0404, flatShading: false, transparent: true},
+		'Dy': {map: new THREE.TextureLoader().load("../assets/arrow.png")},
 		'Ti':  {color: 0x888888, flatShading: false, transparent: true, side: THREE.DoubleSide} 
 }
 
-const posSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0xab5640,  flatShading: false, transparent: true} );
-const negSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0x4095ab, flatShading: false, transparent: true } );
-const posposSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0xab2300, flatShading: false, transparent: true } );
-const negnegSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0x000bab, flatShading: false, transparent: true } );
+
+const negSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0xab5640,  flatShading: false, transparent: true} );
+const posSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0x4095ab, flatShading: false, transparent: true } );
+const negnegSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0xab2300, flatShading: false, transparent: true } );
+const posposSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0x000bab, flatShading: false, transparent: true } );
 
 
 const posVisonMaterial = new THREE.MeshPhongMaterial( { color: 0x9a3fc1, flatShading: false, transparent: true } );
@@ -339,7 +341,7 @@ function construct_arrow_geometry(length, stem_radius=null, head_radius=null, he
 }
 
 const arrow3d_shape = construct_arrow_geometry(1, 0.1, 0.3, 0.2);
-const spin_arrow_shape = construct_arrow_geometry(1, 0.2, 0.4, 0.4, true);
+const spin_arrow_shape = construct_arrow_geometry(1, 0.1, 0.3, 0.4, true);
 
 
 function construct_hexagon_shape(subl){
@@ -915,8 +917,8 @@ qsi.energy_csi = () => {
 	qsi.m_tetra.forEach( (t, i) =>{
 		for (let j=0; j<4; j++){
 			let sz = t.spin_t[j].heis_moment.z;
-			for (let i=j+1; i<4; i++){
-				E +=  J[i%2]*sz*t.spin_t[i].heis_moment.z;
+			for (let k=j+1; k<4; k++){
+				E +=  J[i%2]*sz*t.spin_t[k].heis_moment.z;
 			}
 		}
 	});

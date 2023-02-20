@@ -129,7 +129,13 @@ Show system as <select id="geom_dropdown" class="live">
 	<td>
 
 		<div>
-	Temperature:
+			<div class="tooltip">
+				Temperature:
+				<span class="tooltiptext">
+					The temperature of the Monte Carlo simulation. Higher temperatures lead to
+					random noise, lower temperatures freeze out any motion.
+				</span>
+			</div>
   <input type="number" min="0.001" max="10" value="0.01" step="0.01" id="temp_box"
   style="width:7em">
 	<span style="display:inline-block; width:10em" id="temp_unit_span"></span>
@@ -166,7 +172,13 @@ Show system as <select id="geom_dropdown" class="live">
 
 	<td>
 		<div>
-			Tick Rate: <input type="number" id="tickrate_display"
+			<div class="tooltip">
+			Tick Rate: 
+			<span class="tooltiptext">
+				The number of Metropolois moves to attempt on each spin per second.
+			</span>
+			</div>
+			<input type="number" id="tickrate_display"
 											style="width:5em", value="10"></input>$s^{-1}\text{spin}^{-1}$
   <input type="range" min="1" max="100" value="10" class="slider" step="1" id="trate_slider"> 
 		</div>
@@ -175,8 +187,8 @@ Show system as <select id="geom_dropdown" class="live">
 </table>
 
 <div style="margin-top:2em;height:80vh">
-	<div id='3D_TARGET' style="margin-top:2em;height:80vh"></div>
-	<div style="display:inline-block; width:20em; position:relative; top:-79vh; padding-left:1em;">
+	<div id='3D_TARGET' style="margin-top:2em;height:70vh"></div>
+	<div style="display:inline-block; width:20em; position:relative; top:-69vh; padding-left:1em;">
 		Energy: <span id="energy_span", style="display:inline-block; width:10em"></span> <br>
 		<span id="g_span"></span>
 	</div>
@@ -184,10 +196,23 @@ Show system as <select id="geom_dropdown" class="live">
 </div>
 
 
-
-
-
 <h1>Classical Spin Ice</h1>
+
+<p>
+Each of the arrows above interacts following a simple rule - between every nearest neighbour, unlike
+poles attract while like poles repel. But there's an issue - this lattice is <i>geometrically
+frustrated</i>, i.e. it is physically impossible to make all bonds happy. The best you can do is
+satisfy 4/6:
+</p>
+
+<img src="../assets/2I2O.png" style="display: block;margin-left: auto;margin-right: auto;height: 40vh;">
+
+<p>
+The interesting part is that there is no unique way of doing this everywhere - unlike more
+pedestrian, unfrustrated systems (like the magnets on your fridge), there are a <i>massive</i>
+number of potential ground states (i.e. lowest-energy states) for classical spin ice.
+</p>
+
 <p>
 This is a direct analogue of the water ice originally identified by Pauling 
 <a href="https://doi.org/10.1021/ja01315a102">(1935)</a> as having a residual entropy at zero
@@ -195,7 +220,7 @@ temperature. Spins are Ising-like, i.e. they may only
 point up or down, rendering this a purely classsical model - all of the $\sigma^z$'s commute. The
 Hamiltonian is
 
-$H = \sum_{\langle ij \rangle} J_{A/B}^{zz} S^z_i S^z_j.$
+$$H = \sum_{\langle ij \rangle} J_{A/B}^{zz} S^z_i S^z_j.$$
 
 where the couplings $J_{A/B}$ are $J_A$ ($J_B$) if the bond is an edge of a pale green (dark green) tetrahedron. 
 Depending on the breahting anisotropy you set, either the $A$ or $B$ tetrahedra will
