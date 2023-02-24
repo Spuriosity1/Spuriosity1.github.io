@@ -145,10 +145,10 @@ const materials_pyro = {
 }
 
 
-const negSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0xab5640,  flatShading: false, transparent: true} );
-const posSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0x4095ab, flatShading: false, transparent: true } );
-const negnegSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0xab2300, flatShading: false, transparent: true } );
-const posposSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0x000bab, flatShading: false, transparent: true } );
+const posSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0xab5640,  flatShading: false, transparent: true} );
+const negSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0x4095ab, flatShading: false, transparent: true } );
+const posposSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0xab2300, flatShading: false, transparent: true } );
+const negnegSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0x000bab, flatShading: false, transparent: true } );
 
 
 const posVisonMaterial = new THREE.MeshPhongMaterial( { color: 0x9a3fc1, flatShading: false, transparent: true } );
