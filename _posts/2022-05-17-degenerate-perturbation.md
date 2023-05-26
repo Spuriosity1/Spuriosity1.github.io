@@ -34,26 +34,19 @@ The original Schrödinger equation may be re-expressed as $(E - H_0) \ket{\psi} 
 V\ket{\psi}$. Since $\mathcal{M}$ is the span of $H_0$ eigenstates, it follows that $[H_0, P] = 0$.
 It follows that
 
-$$
-    (E-H_0) Q \ket{\psi} = QV \ket{\psi}
-	\hspace{3em}[2]
-$$
+$$ (E-H_0) Q \ket{\psi} = QV \ket{\psi} \hspace{3em}[2] $$
 
 If $E-H_0$ is nondegenerate (i.e. $E$ does not overlap with an eigenvalue of $H_0$), it is clear to see that in
 the finite dimensional case this operator is full rank and therefore invertible. (Hint: $H = UDU^\dagger \Rightarrow (E-H_0) =
 U(E-D)U^\dagger$)
-It is clearly a map $\mathcal{H} \to \mathcal{H}$, and can be cnstructed explicitly as
+It is clearly a map $\mathcal{H} \to \mathcal{H}$, and can be constructed explicitly as
 
-$$
-	K = \sum_{\alpha} \frac{\ket{\alpha} \bra{\alpha}}{E - \epsilon_\alpha} \hspace{3em}[3]
-$$
+$$ K = \sum_{\alpha} \frac{\ket{\alpha} \bra{\alpha}}{E - \epsilon_\alpha} \hspace{3em}[3] $$
 
 It is simple to show that $(E-H_0)K = K(E-H_0) = 1$.
 Applying $K$ to [2] gives the useful relation
 
-$$
-    Q\ket{\psi} = KQV\ket{\psi} \hspace{3em}[4]
-$$
+$$ Q\ket{\psi} = KQV\ket{\psi} \hspace{3em}[4] $$
 
 
 ## The Wave Operator
@@ -122,6 +115,109 @@ of $\mathcal{H}$ on which $\Omega$ is convergent, the 'perturbative subspace' if
 Perturbation theory will not reveal any other states, including instantons and some solitons.
 In general, it will not get you the correct ground state either, cf. confinement.
 
+## Finding the energy E
+
+As written, we do not yet have a solution - the exact energy $E$ appears on both sides of the equation
+
+$$H_{eff} P \ket{\psi} = E \ket{\psi}$$
+
+This is the so-called Brillouin-Wigner framework, which one may in principle solve
+self-consistently. Alternatively, it is possible to move to the Rayleigh-Schrödinger framework that,
+rather than relying on the existence of an operator inverse, computes the series expansion of $\Omega$ recursively (and without knowing $E$).
+
+First, we write $\Omega = \sum_{n=0}^\infty \Omega_n$, where $\Omega_n$ is of order $n$ in $V$ and
+$\Omega_0 = 1$. (The argument from earlier shows that $\Omega_n = (KQV)^n$, but what follows does
+not need us to know $K(E)$ explicitly).
+
+**Theorem**: When the domain is restricted to $\mathcal{M}$, it is the case that
+
+$$
+[ \Omega_n, H_0 ] = QV \Omega_{n-1} - \sum_{j=1}^{n-1}\Omega_j P V \Omega_{n-j-1}
+$$
+
+_Proof_:
+
+Start with the equation $V \ket{\psi} = (E - H_0) \ket{\psi}$.
+We use the fact that for any (perturbative) $\psi$, $\Omega P \ket{\psi} = \ket{\psi}$, i.e. $\Omega
+P$ is a projection operator that is unity in the relevant subspace.
+
+$$
+\left[\Omega H_0 P  - H_0 \Omega P \right] \ket{\psi} \\
+= \left[ (E - \Omega P V \Omega P) - (E - V\Omega P ) \right] \ket{\psi}
+$$
+
+From this it is clear that when acting on model-space states $\mathcal{M}$,
+$$
+[\Omega, H_0] = (1-\Omega P)V\Omega.
+$$
+Expanding $\Omega$ and comparing powers of $V$ yields 
+
+$$
+[\Omega_n, H_0] = V\Omega_{n-1} - \sum_{u+v + 1 = n} \Omega_u PV\Omega_v\\
+ = V\Omega_{n-1} - \sum_{u=0}^{n-1} \Omega_u PV\Omega_{n-u-1}$$
+
+Which (modulo some index shuffling) is the result that we wished to prove.
+
+
+Finally, note that the expansion for the effective Hamiltonian
+$H_{\text{eff}} : \mathcal{M} \to \mathcal{M}$ is $H_{eff} = P H_0 P + P H_1 P + P H_2 P + ... $,
+where $H_n = V \Omega_{n-1} \forall n \in \mathbb{Z}_{> 1}$, and $H_0$ is the unperturbed
+Hamiltonian from before. If we can determine the values of
+$\Omega_n$, then we have an $n$th order approximation to the effective Hamiltonian.
+
+## Taking matrix elements
+
+Adopt the notation 
+$\ket{a}, \ket{b}, ...  \in \mathcal{M}$, $\ket{x}, \ket{y}, ... \in \mathcal{H}$.
+
+The projectors mean that the only relevant matrix elements are $\bra{a} H_n \ket{b}$. What follows
+must be done iteratively - 
+
+$\bra{a} H_0 \ket{b} = \epsilon_a \delta_{ab} $
+
+$\bra{a} H_1 \ket{b} = \bra{a}V\ket{b} $
+
+$\bra{a} H_2 \ket{b} = \sum_x \bra{a} V \ket{x}\bra{x}\Omega_1 \ket{b}$
+
+We need to infer $\Omega_1$ from the commutator relation above:
+
+$\hspace{2em} \bra{x} [\Omega_1, H_0] \ket{b} = \bra{x} QV \ket{b}$
+
+$\hspace{2em} \Rightarrow (\epsilon_b - \epsilon_x) \bra{x} \Omega_1 \ket{b} = \bra{x} QV \ket{b}$
+
+As written, we know that if $x \in \mathcal{M}^\perp, b\in \mathcal{M}$, then $\epsilon_b -
+\epsilon_x \neq 0$ and we can invert the left hand side:
+
+$$  \bra{x} \Omega_1 \ket{b} = \frac{1}{\epsilon_b - \epsilon_x}\bra{x} QV \ket{b}$$
+
+This works, but leaves $\Omega_1$ unprescribed if $\ket{x} \in \mathcal{M}$. However,
+from the 'implicit' definition above $ \Omega_n(E) = \left[Q(E-H_0)^{-1}V\right]^n $, we see that all $\Omega_n$ have a range
+that is strictly $\mathcal{M}^\perp$, i.e. $\Omega_n \equiv Q \Omega_n$ for $n\ge 1$. 
+
+Finally, we have the result
+
+$$  \bra{a}H_2 \ket{b} =   \bra{a} V \sum_{x \in \mathcal{M}^\perp }\ket{x}\bra{x}
+\frac{1}{\epsilon_b - \epsilon_x} QV \ket{b}\\
+= \bra{a} V \sum_{x \in \mathcal{M}^\perp }\ket{x}\bra{x} \frac{1}{\epsilon_b - H_0} QV \ket{b}
+= \bra{a} V  \frac{1}{\epsilon_b - H_0} QV  \ket{b}$$
+
+A similar calculation for $H_3$ yields one term beyond the neatural generalisation of the series,
+
+$$
+\bra{a} H_3 \ket{b} = 
+\bra{a} V \frac{1}{\epsilon_b - H_0} Q V \frac{1}{\epsilon_b - H_0} Q V \ket{b} -
+\sum_c \bra{a} V \frac{1}{\epsilon_b - H_0} \frac{1}{\epsilon_c - H_0} Q V \ket{c} \bra{c} V \ket{b}
+$$
+
+
+
+# Examples and Applications
+
+
+## Ordinary degenerate perturbation theory
+
+We derive here an important special case, where every state in the model space $\mathcal{M}$ has the
+same unperturbed energy. 
 
 ## Field theory and the self energy: why $K$ is a Green's function
 
@@ -195,10 +291,6 @@ $$ G(k, \omega| k', \omega') \equiv \frac{1}{E-(\omega - \omega') - \Sigma(k-k' 
 where $\Sigma$ is the _self energy_ that exactly accounts for the influence of all orders of
 perturbative corrections.
 
-## Ordinary perturbation theory
-
-Show that this derivation amounts to the same thing as standard nondegenerate perturbation theory
-under suitable assumptions (e.g. that $\mathcal{M}$ is one dimensional)
 
 # Examples
 
@@ -253,7 +345,8 @@ The effective Hamiltonian is
 $$H_{eff} = -\frac{3J_\perp^3}{2J_{zz}^2} \sum_{p} \mathcal{O}_p + \mathcal{O}_p^\dagger + constant$$
 
 The $3/2$ comes from the fact that each plaquette has six possible counterclockwise hoppings (and another six clockwise, captured by the $\mathcal{O}^\dagger$), while the energy of the
-intermediate excited state is $2J_{zz}$, giving an overall contribution of $\frac{6 J_\perp^3}{(2J_zz)^2}$.
+intermediate excited state is $2J_{zz}$, giving an overall contribution of 
+$\frac{6J_\perp^3}{(2J_{zz})^2}$.
 
 This is far from the end of the story, but that is a tale for another post.
 
@@ -358,5 +451,10 @@ leading to the friendlier expression
 $$Q_p = \tau_1^y\tau_3^y \tau_2^z \tau_4^z$$
 
 (up to a possible sign error)
+
+
+# References
+
+[Yoshio Kuramoto, Perturbation Theory and Effective Hamiltonian](https://link.springer.com/chapter/10.1007/978-4-431-55393-9_1)
 
 
