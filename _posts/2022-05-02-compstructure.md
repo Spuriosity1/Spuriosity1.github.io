@@ -26,39 +26,32 @@ _Every output's filename contains all of the information needed to recreate it_.
 
 E.g. suppose you have a numerical Schrodinger equation solver, your output files will look like
 ```
-sewf?version=1.5?nsteps=200?potential=[9,4,2,1,2,4,9]?n=5?method=exactdiag_wf.csv
+run1?version=1.5?nsteps=200?potential=[9,4,2,1,2,4,9]?n=5?method=exactdiag_wf.csv
 ```
-whereas the stateful paradigm approach would have output more like
+whereas the stateful-paradigm approach would have output files named like
 ```
-sewf?version=1.5?infile=input/parabolic_9_wf.csv
+run2?version=1.5?infile=input/parabolic_9_wf.csv
 ```
 
 Keeping everything in the filename looks hacky, but at the end of the day it's how the Web works:
 GET requests look like
 `https://duckduckgo.com/?q=databases+for+scientific+computing&t=newext&atb=v298-1&ia=web`, and they
-power almost everything you see. It comes with many pros:
-1. Completely obvious what is happening
-2. Remembers the state of the input file when it is read, you're free to edit the infile while the
-   simulation runs
-3. No risk of overwriting data with different parameters
-4. Easy to label graphs when parsing output
+power almost everything you see. 
 
-It also has its drawbacks though:
-1. On UNIX, file names are limited to 255 characters, severely restricting the number of parameters
-   you can use
-2. It can be hard to tell at a glance what you actually have in the output folder (i.e. it "buries
-   the lead" when running e.g. a phase diagram calculation)
+| **Pros** | **Cons** |
+| ---- | ---- |
+| Completely obvious what is happening | Long filenames are limiting (limited to 256 chars on UNIX)|
+| Remembers the state of the input file when it is read | Difficult to see what is happening at a glance |
+| No risk of overwriting data with different parameters |
+| Easy to label graphs when parsing output |
+| Robust to any modifications to input files |
+
 
 The stateful-paradigm, input-file approach has the opposite situation:
-**Pros**
-1. Arbitrarily large and complex input structures can be used
-2. If well-named, output files only contain the necessary information
-**Cons**
-1. Requires diligent naming conventions and careful file hygiene not to modify the input file between
-   running the simulation and processing the output
-2. Lazy file naming easily leads to mess
-3. Easy to overwrite things by accident
-
+| **Pros** | **Cons** |
+| Arbitrarily large, complex input structures can be used | Input files must be made read-only to
+avoid later confusion |
+| If well-named, output file names contain only relevant information | 
 
 I want to stress that storing parameters in the filenames of output you generate is a **good
 practice**, even if it looks ugly / feels hacky. It's only going to be an issue if you plan on
@@ -66,7 +59,7 @@ radically changing the meaning of those parameters, which is easily avoided by g
 name, or better yet storing a "version" field in the filename.
 
 Generally speaking, I find myself dealing with around 10 numerical parameters 
-(that shouldn't affect the answer much, unless they're too small) and 4-5 physical parameters. When
+(that shouldn't affect the answer much) and 4-5 physical parameters. When
 doing many trials (as in a Monte Carlo simulation) or many similar computations (as in a parameter
 sweep), almost none of these change: it seems wasteful to clutter the output folder with a bunch of
 parameters that are 90% identical.
@@ -137,9 +130,7 @@ output/high_temp?v=1.5?phi=0.56.quantity2.csv
 ```
 The `v` flag is hard-coded into the executable, meaning 'version', and in general you might want to
 make several output files for the different quantities of interest. It might also be advisable to
-add a timestamp to the header row of your CSV files as a sanity check. 
-
-
+add a timestamp to the header row of your CSV files as a sanity check.
 
 
 
@@ -151,14 +142,14 @@ done
 ```
 
 This kind of problem is known as and "embarrassingly parallel" calculation: there are
-a huge suite of executables that can all run completely independent of one another.
+a huge number of threads that can all run completely independent of one another, avoiding the need
+for complicated openMP / MPI structures.
 Queuing all of these as jobs in parallel gets slightly trickier if you
 want to avoid spawning thousands of threads, but that's a topic for another post.
 
-
 ## RegEx
 
-Regular Expressions, or regex, are an absolutely indispensable part of parsing human-readable files.
+Regular Expressions, or regex, are an absolutely indispensable tool for parsing human-readable files.
 They are a kind of shorthand for grabbing parts of strings, which is helpful if important simulation
 parameters are stored in strings. For example, when generating a phase diagram you might have a
 folder full of output files similar to
@@ -226,5 +217,24 @@ The canonical file format for complicated, array-heavy data structures is
 
 The downside of doing this is that parallelisation is suddenly a headache:
 having multiple threads contribute to the same file means you suddenly need to worry about locks,
-mutexes and the famously difficult-to-debug data races.
+mutexes and famously difficult-to-debug race conditions.
+
+# My workflow
+
+When running a simulation, I do the following:
+1. Create input files. Anything that will be fed in to the simulation is marked as readonly with
+`chmod a-w /path/to/inputv1.toml`. This avoids any accidental mutation of the mapping from { infile
+names } -> { parameters } over time.
+2. Run the sweep using a bash `for` loop, or some other jig.
+3. After processing the data, iterate on the original input with a new file, using a new file name.
+
+This routine guarantees that data from months (or even years) ago remains usable - I can be
+confident that I understand exactly what went in to these simulations and what came out. Assuming
+that my git history is intact, I can even double-check the state of the simulation code at that
+point in time.
+
+
+
+
+
 

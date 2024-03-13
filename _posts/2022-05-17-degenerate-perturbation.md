@@ -64,19 +64,17 @@ $ = \sum_{j=0}^\infty (KQV)^j P \ket{\psi} := \Omega(E) P\ket{\psi} $
 
 $\Omega(E)$ is sometimes called the wave operator, and it seemingly does the impossible - mapping
 something in $\mathcal{M}$ to a unique element of $\mathcal{H}$ as though it is $P^{-1}$. Such an
-object clearly does not exist, since $P$'s kernel is zero for most of the Hilbert space.
+object clearly does not exist, since $P$'s kernel is most of the Hilbert space.
 
 The subterfuge here comes from convergence of the series. In the self-referential step, we
 implicitly assumed that $\lim_{N\ to \infty} (KQV)^N \ket{\psi} = 0$, which only holds true for
 certain choices of $V$ and states in a certain subspace of $\mathcal{H}$. I don't believe it's
 possible to find a more useful specification of this subspace without choosing a specific $V$.
-We see that there are obvious issues if $E$ is an eigenvlue of a model space element and 
+We see that there are obvious issues if $E$ is an eigenvalue of a model space element.
 We'll worry about it as it emerges.
 
 It's also worth noting that we could have used a subtly different operator to invert $E-H_0$,
-
 $$K'(E) = \sum_{\alpha \in \mathcal{M}^\perp} \frac{\ket{\alpha}\bra{\alpha}}{E-\epsilon_\alpha}$$
-
 which has the advantage of being defined even if $E$ overlaps with an energy in $\mathcal{M}$. Kitaev
 calls this object $G_0'(E)$. Wherever $K$ is defined, $K'(E) = QK(E)Q = QK(E)$
 
@@ -93,7 +91,7 @@ $$ P V \Omega(E) P \ket{\psi}  = (E-H_0) P \ket{\psi}$$
 
 $$ H_{eff} P \ket{\psi} = E P \ket{\psi} $$
 
-where $H_{eff}$ has beein identified with $P\left[H_0 + V\Omega(E) \right]P$.
+where $H_{eff}$ has been identified with $P\left[H_0 + V\Omega(E) \right]P$.
 
 It is usually the case that $\mathcal{M}$ is completely energy degenerate, in which case
 $PH_0P\equiv \epsilon_0$ is a trivial constant that can be dropped. 
@@ -413,7 +411,7 @@ expression that any consistent choice gives the same answer)
 
 The constant of proportioanlity comes from a sum over the 4! different ways of arranging these four
 operators, i.e. the 4! different ways of assigning terms to the $V$ placeholders in the expression $-
-PV\frac{Q}{H_0}V\frac{Q}{H_0}V\frac{Q}{H_0}VP$. Regardless of whether or not the perturbations
+PV\frac{Q}{H_0}V\frac{Q}{H_0}V\frac{Q}{H_0}VP$. Regardless of whether the perturbations
 commute with each other, they certainly do not commute with $H_0$ if they are not trivial - all 24
 terms must be summed, with the energies of the intermediate virtual states properly accounted for.
 

@@ -199,17 +199,15 @@ Show system as <select id="geom_dropdown" class="live">
 <h1>Classical Spin Ice</h1>
 
 <p>
-Each of the arrows above interacts following a simple rule - between every nearest neighbour, unlike
-poles attract while like poles repel. But there's an issue - this lattice is <i>geometrically
-frustrated</i>, i.e. it is physically impossible to make all bonds happy. The best you can do is
-satisfy 4/6:
+Each of the arrows above represents a <i>spin</i>, a tiny magnet associated with an atom of e.g. Dysprosium. These spins interacts following a simple rule - across every `bond' (straight black line), the unlike poles attract while like poles repel. But there's an issue - this lattice is <i>geometrically
+frustrated</i>, i.e. it is impossible to satisfy all of the bonds. The best you can do satisfies only 4/6:
 </p>
 
 <img src="../assets/2I2O.png" style="display: block;margin-left: auto;margin-right: auto;height: 40vh;">
 
 <p>
 The interesting part is that there is no unique way of doing this everywhere - unlike more
-pedestrian, unfrustrated systems (like the magnets on your fridge), there are a <i>massive</i>
+pedestrian, unfrustrated systems (like the magnets on your fridge), there are an <i>extensive</i>
 number of potential ground states (i.e. lowest-energy states) for classical spin ice.
 </p>
 
@@ -220,22 +218,18 @@ temperature. Spins are Ising-like, i.e. they may only
 point up or down, rendering this a purely classsical model - all of the $\sigma^z$'s commute. The
 Hamiltonian is
 
-$$H = \sum_{\langle ij \rangle} J_{A/B}^{zz} S^z_i S^z_j.$$
+$H = \sum_{\langle ij \rangle} J_{A/B}^{zz} S^z_i S^z_j$
 
-where the couplings $J_{A/B}$ are $J_A$ ($J_B$) if the bond is an edge of a pale green (dark green) tetrahedron. 
+where the couplings $J_{A/B}$ are $J_A$ ($J_B$) if the bond is an edge of an `up' (`down') tetrahedron.
 Depending on the breahting anisotropy you set, either the $A$ or $B$ tetrahedra will
 become bigger; by default they are the same size.
 
-The 'Classical Spin Ice' simulation performs Metropolis steps on this Hamiltonian at the specified
-temperature. Tetrahedra are coloured red/blue to distinguish postive
+The 'Classical Spin Ice' simulation performs Metropolis steps on this Hamiltonian at the specified temperature. Tetrahedra are coloured red/blue to distinguish postive
 and negative <it>spinons</it>. To see what the Monte Carlo spinon dynamics are, all you need to do
-is
-
-<ol>
-	<li> Set the order to 'All In, All Out' (AIAO)
-	<li> Click 'Simulate' on the Classical Spin Ice tab.
-</ol>
-
+is click 
+<button id="preset_CSI">here</button>.
+</p>
+<p>
 You should see a mess of initial spinons, which all eventually anneal out to a small handful that
 persist for long times. This is a signature of topological protection - an isolated spinon cannot be
 removed from the system by local spin flips, it must wander and collide with a spinon of the
@@ -260,16 +254,36 @@ This classical statistical mechanics description is missing something - when run
 randomly choose to flip spins, but we have completely ignored the question of how they come to flip
 in the first place. Supose that we add a small non-commuting hopping term to the Hamiltonian
 
-$H = \sum_{\langle ij \rangle} J_{A/B}^{zz} S^z_i S^z_j + \frac{1}{2}J_{A/B}^\perp (S^+_i S^-_j + S^-_iS^+_j).$
+\[H_{CSI} = \sum_{\langle ij \rangle} J_{A/B}^{zz} S^z_i S^z_j + \frac{1}{2}J_{A/B}^\perp (S^+_i S^-_j + S^-_iS^+_j).\]
 
 By doing this, we generate uncertainty in the $S^z$ field, and imbue it with coherent, quantum
 dynamics.
 
 In a 
 <a href="https://link.aps.org/doi/10.1103/PhysRevB.69.064404">famous paper</a>, it has been argued that at low temperature, the collective excitations of these
-spins (i.e. the spin waves) are gapless photons, while the inherent compactness of the eMagnetic
-fields manifests in the presence of topological defects in the eMagnetic field.
+spins are effectively gapless photons, while the inherent compactness of the eMagnetic
+fields manifests in the presence of topological defects in the eMagnetic field. We briefly summarise the construction here.
 
+Working thin the limit $|J^\pm| \ll |J^{zz}|$, <a href="/2022-05-17-degenerate-perturbation">degenerate perturbation theory</a>, one obtains a series expansion for the effective Hamiltonian acting within the 2 in, 2 out manifold,</p>
+
+<p>\[H_{\rm eff} = P\left[V + V \frac{Q}{E-H_0} V + V \frac{Q}{E-H_0} V \frac{Q}{E-H_0} V + ...\right]P\]</p>
+<p>
+where
+<ul>
+	<li>$H_0=H_{CSI}$ is the Ising Hamiltonian,</li>
+	<li>$V = H-H_0$</li>
+	<li>$P = \sum_{\psi \in \rm ice states} \ket{\psi}\bra{\psi}$ is the projector onto the manifold of 2 in, 2 out ice states</li>
+	<li>$Q=1-P$</li>
+</ul>
+
+satisfying $H_{\rm eff} \ket{\psi} = E\ket{\psi}$. In the limit of large $J^{zz}$ (note that this energy scale controls the spinon gap), we make the approximation that the energy $E$ of the gauge excitations is much lower than the spinon gap, $E-H_0 \simeq -H_0$.
+</p>
+
+<p>
+The leading non-constant term comes at third (!) order,
+\[H_{eff} = \left(\frac{3J_{\pm,A}^3}{4J_{zz,B}} + \frac{3J_{\pm,B}^3}{4J_{zz,A}}\right)\sum_p \mathcal{O}_p + \mathcal{O}_p^\dagger\]
+where the hexagon-flip $\mathcal{O}_p = S^+_1S^-_2S^+_3S^-_4S^+_5S^-_6$ is an alternating product of ladder operators around an elementary hexagon.
+</p>
 
 <h2>To-Do</h2>
 <ul>

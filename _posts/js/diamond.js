@@ -149,6 +149,7 @@ const posSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0xab5640,  flatS
 const negSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0x4095ab, flatShading: false, transparent: true } );
 const posposSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0xab2300, flatShading: false, transparent: true } );
 const negnegSpinonMaterial = new THREE.MeshPhongMaterial( { color: 0x000bab, flatShading: false, transparent: true } );
+const blankSpinonMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, wireframe: true });
 
 
 const posVisonMaterial = new THREE.MeshPhongMaterial( { color: 0x9a3fc1, flatShading: false, transparent: true } );
@@ -161,6 +162,7 @@ function init() {
     // SCENE
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0xbfd1e5);
+    //scene.background = new THREE.Color(0xffffff);
 
     // CAMERA
     camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 5000);
@@ -658,7 +660,8 @@ function colour_spinons(){
 			t.material = negSpinonMaterial;
 			t.visible = true;
 		} else {
-			t.visible = false;
+            t.material = blankSpinonMaterial;
+			t.visible = true;
 		}
 		t.material.opacity=op;
 
@@ -1231,13 +1234,19 @@ function handleClick(e) {
 
 // constants
 
+/////////////////////////////////////////////////////////////////////////////////////////
+    // presets
+
+
+function CSI_preset(){
+
+}
 
 
 
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Interactivity Attachments
 
 
 
@@ -1249,30 +1258,11 @@ colors.forEach(
 	(c)=>{lineMaterials.push(new THREE.MeshPhongMaterial( { color: c} ))
 });
 
-// Start the program
-document.addEventListener("DOMContentLoaded",function () {
 
-	construct_direction();
-	
-    window.addEventListener('resize', onWindowResize, false);
-    init();
-    animate();
-
-	const Dy_slider = document.getElementById('Dy_slider');
-	const Ti_slider = document.getElementById('Ti_slider');
-	document.getElementById('pyro_Dy_slider').oninput = function(){update_opacity("m_spin", this.valueAsNumber/100)} ;
-	document.getElementById('pyro_Ti_slider').oninput = function(){update_opacity("m_plaq", this.valueAsNumber/100)} ;
-	document.getElementById('breathing_slider').oninput = function(){update_scaling(this.valueAsNumber/100)} ;
-
-
-	Dy_slider.oninput = function() {update_opacity("m_tetra", this.valueAsNumber/100)} ;
-	Ti_slider.oninput = function() {update_opacity("m_ptetra", this.valueAsNumber/100)} ;
-
-	document.getElementById('system-size').onchange = function(){
-		if (this.valueAsNumber < 0 || this.valueAsNumber > 6) return;
-		Nx = this.valueAsNumber;
-		Ny = this.valueAsNumber;
-		Nz = this.valueAsNumber;
+function update_system_size(n){
+		Nx = n;
+		Ny = n;
+		Nz = n;
 		delete_qsi();
 		construct_qsi();
 		document.getElementById('order_set').onclick(); // set the order
@@ -1280,6 +1270,43 @@ document.addEventListener("DOMContentLoaded",function () {
 		for (slider of document.querySelectorAll('.live')){
 			slider.oninput();
 		}
+}
+
+
+// Start the program
+document.addEventListener("DOMContentLoaded",function () {
+
+    // input objects
+    const Dy_slider = document.getElementById('Dy_slider');
+    const Ti_slider = document.getElementById('Ti_slider');
+    const pyro_Dy_slider = document.getElementById('pyro_Dy_slider');
+    const pyro_Ti_slider = document.getElementById('pyro_Ti_slider');
+    const system_size_elem = document.getElementById('system-size');
+    const geom_dropdown = document.getElementById('geom_dropdown');
+    
+    const orderset_dropdown =  document.getElementById('order_dropdown');
+    const orderset_button = document.getElementById('order_set');
+    
+    const quasi_dropdown = document.getElementById("quasi_dropdown");
+
+	construct_direction();
+	
+    window.addEventListener('resize', onWindowResize, false);
+    init();
+    animate();
+
+	pyro_Dy_slider.oninput = function(){update_opacity("m_spin", this.valueAsNumber/100)} ;
+	pyro_Ti_slider.oninput = function(){update_opacity("m_plaq", this.valueAsNumber/100)} ;
+	document.getElementById('breathing_slider').oninput = function(){update_scaling(this.valueAsNumber/100)} ;
+
+
+	Dy_slider.oninput = function() {update_opacity("m_tetra", this.valueAsNumber/100)} ;
+	Ti_slider.oninput = function() {update_opacity("m_ptetra", this.valueAsNumber/100)} ;
+
+	system_size_elem.onchange = function(){
+		if (this.valueAsNumber < 0) {this.value = 0; return;}
+		if (this.valueAsNumber > 6) {this.value = 6; return;}
+        update_system_size(this.valueAsNumber);
 	} ;
 
 	// Non-contractible surfaces	
@@ -1288,17 +1315,16 @@ document.addEventListener("DOMContentLoaded",function () {
 			highlight_planes();
 
 			// Make the surfaces 50% opaque if they are invisible
-			const tisl = document.getElementById('pyro_Ti_slider');
-			if (tisl.value == 0){
-				tisl.value=50;
-				tisl.oninput();
+			if (pyro_Ti_slider.value == 0){
+                pyro_Ti_slider.value=50;
+                pyro_Ti_slider.oninput();
 			}
 		} else {reset_plaqs()}
 	};
 
 
 	// Representation of lattice
-	document.getElementById('geom_dropdown').oninput = function() { 
+	geom_dropdown.oninput = function() { 
 		if (this.value == "SpinIce") {
 			qsi.m_tetra.forEach( t => {
 				t.geometry = (t.subl==0)?tetraA_shape:tetraB_shape;
@@ -1324,8 +1350,6 @@ document.addEventListener("DOMContentLoaded",function () {
 
 
 	// Representation of pyrochlore sublattice
-	const orderset_dropdown =  document.getElementById('order_dropdown');
-	const orderset_button = document.getElementById('order_set');
 	orderset_button.onclick = function() { 
 		if (orderset_dropdown.value == "AIAO") {
 			qsi.m_spin.forEach( s =>{
@@ -1363,7 +1387,6 @@ document.addEventListener("DOMContentLoaded",function () {
 	};
 
 
-	const quasi_dropdown = document.getElementById("quasi_dropdown");
 	quasi_dropdown.oninput = function() {
 		reset_tetra();
 		if (this.value === "spinons") {
@@ -1393,38 +1416,36 @@ document.addEventListener("DOMContentLoaded",function () {
 	//
 	//
 	const csi_button = document.getElementById("simulate_button");
+	const csi_show_button = document.getElementById("preset_CSI");
 	const qsi_button = document.getElementById("qsi_simulate_button"); 
 	const t_units = document.getElementById("temp_unit_span");
 
-	csi_button.onclick = function() {
-		if (this.innerHTML == "Simulate"){
-			qsi_button.disabled=true;
-			this.innerHTML = "Stop Simulation";
-
-			// Make sure that we can see what is happening!
-			quasi_dropdown.value="spinons";
-			quasi_dropdown.oninput();
+    function start_csi(){
 			// Set the units
 			t_units.innerHTML= "(J<sub>A</sub>+J<sub>B</sub>)/2";
 			QSI_PARAMS.timeoutID = setInterval(csi_mc_step, QSI_PARAMS.tick_interval);
 
-			document.getElementById('breathing_slider').oninput();
+			qsi_button.disabled=true;
+			csi_button.innerHTML = "Stop Simulation";
 
-		} else {
-			this.innerHTML = "Simulate";	
+			// Make sure that we can see what is happening!
+			quasi_dropdown.value="spinons";
+			quasi_dropdown.oninput();
+
+			document.getElementById('breathing_slider').oninput();
+    }
+
+    function stop_csi(){
 			clearInterval(QSI_PARAMS.timeoutID);
 			QSI_PARAMS.timeoutID = undefined;
 
+			csi_button.innerHTML = "Simulate";	
+
 			t_units.innerHTML= '(units)';
 			qsi_button.disabled=false;
-		}
-	}
+    }
 
-
-	// QSI simulator
-	qsi_button.onclick = function() {
-		if (this.innerHTML == "Simulate"){
-
+    function start_qsi(){
 			csi_button.disabled=true;
 			// Set default values
 			if (orderset_dropdown.value != "XY"){
@@ -1439,14 +1460,14 @@ document.addEventListener("DOMContentLoaded",function () {
 			// set the units
 			t_units.innerHTML="|g+ig'|";
 
-			this.innerHTML = "Stop Simulation";
+			qsi_button.innerHTML = "Stop Simulation";
 			QSI_PARAMS.qsi_timeoutID = setInterval(qsi_mc_step, QSI_PARAMS.tick_interval);
 
-
 			document.getElementById('breathing_slider').oninput();
-			
-		} else {
-			this.innerHTML = "Simulate";	
+    }
+
+    function stop_qsi(){
+			qsi_button.innerHTML = "Simulate";	
 			clearInterval(QSI_PARAMS.qsi_timeoutID);
 			QSI_PARAMS.qsi_timeoutID = undefined;
 
@@ -1454,6 +1475,30 @@ document.addEventListener("DOMContentLoaded",function () {
 			csi_button.disabled=false;
 			orderset_dropdown.disabled=false;	
 			orderset_button.disabled=false;
+    }
+
+	csi_button.onclick = function() {
+		if (this.innerHTML == "Simulate"){
+            start_csi();
+		} else {
+            stop_csi();
+		}
+	}
+    csi_show_button.onclick = function(){
+        stop_qsi();
+        start_csi();
+        update_system_size(2);
+        update_opacity('m_plaq',0);
+        mum.scrollIntoView();
+    }
+
+
+	// QSI simulator
+	qsi_button.onclick = function() {
+		if (this.innerHTML == "Simulate"){
+		    start_qsi();	
+		} else {
+            stop_qsi();
 		}
 	}
 
