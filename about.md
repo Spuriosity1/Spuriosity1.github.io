@@ -16,7 +16,7 @@ the famed graduate bar of Christ's College.
 
 ## My Publications
 
-- [Experimentally tunable QED in dipolar-octupolar quantum spin ice(https://arxiv.org/abs/2312.11641)
+- [Experimentally tunable QED in dipolar-octupolar quantum spin ice](https://arxiv.org/abs/2312.11641)
 Han Yan, A.L.S., Claudio Castelnovo, Andriy H. Nevidomskyy
 arXiv:2312.11641
 
