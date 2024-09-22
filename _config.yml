@@ -22,6 +22,6 @@ highlighter: rouge
 
 
 navbar:
- - name: "About"
+ - name: "About Me"
    link: "about"
 
