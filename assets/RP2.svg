@@ -7,7 +7,7 @@
    viewBox="0 0 92.76754 52.371147"
    version="1.1"
    id="svg5"
-   inkscape:version="1.2.1 (9c6d41e, 2022-07-14)"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25)"
    sodipodi:docname="RP2.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -24,10 +24,10 @@
      inkscape:deskcolor="#505050"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="1.2231218"
-     inkscape:cx="212.16203"
-     inkscape:cy="108.32936"
-     inkscape:window-width="1700"
+     inkscape:zoom="2.0092742"
+     inkscape:cx="207.78647"
+     inkscape:cy="92.073047"
+     inkscape:window-width="1712"
      inkscape:window-height="935"
      inkscape:window-x="0"
      inkscape:window-y="25"
@@ -105,7 +105,7 @@
        d="M 76.845751,66.385554 73.977967,31.483563"
        id="path1461-4" />
     <path
-       style="fill:none;stroke:#cf00cd;stroke-width:0.221755px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="fill:none;stroke:#cf0002;stroke-width:1.022;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-dasharray:none"
        d="M 94.160759,51.410654 56.662961,46.458462"
        id="path1461-9" />
     <path
@@ -163,6 +163,18 @@
        id="path1760"
        cx="119.07647"
        cy="42.295441"
+       r="0.39455423" />
+    <circle
+       style="fill:#cf0002;fill-opacity:1;stroke:#cf0002;stroke-width:1.42300011;stroke-linecap:square;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       id="path1760-7"
+       cx="119.68269"
+       cy="34.78653"
+       r="0.39455423" />
+    <circle
+       style="fill:#cf0002;fill-opacity:1;stroke:#cf0002;stroke-width:1.42300011;stroke-linecap:square;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       id="path1760-7-9"
+       cx="137.38081"
+       cy="48.185814"
        r="0.39455423" />
     <circle
        style="fill:#cf00cd;fill-opacity:1;stroke:#cf00cd;stroke-width:0.423333;stroke-linecap:square;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
