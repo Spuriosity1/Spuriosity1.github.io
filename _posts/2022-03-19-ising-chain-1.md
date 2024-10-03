@@ -70,7 +70,7 @@ $$[a, a^\dagger] = 1$$
 
 ## Jordan-Wigner transformation
 
-Define the string operator $$K_j = \prof_{l=0}^{j-1} \sigma_j^z$$. The Jordan-Wigner fermion is
+Define the string operator $$K_j = \prod_{l=0}^{j-1} \sigma_j^z$$. The Jordan-Wigner fermion is
 defined as
 $$c_j = K_j S^+ _ j, c _ j^\dagger = (c _ j)^\dagger$$.
 
