@@ -42,7 +42,7 @@ _In Plain(ish) English_: There is a very interesting model of quantum magnetism 
 
 Our work determines a range of acceptable coupling constants for these materials based on the results of a neutron scattering experiment. We point out that, due to an exact symmetry in the model we use, no neutron scattering experiment can uniquely determine the sign of the all-important Kitaev coupling constant. Instead, we present two equally-good models dual to one another by exact symmetry, and propose the use of a complementary technique (e.g. RIXS) to determine the sign of the Kitaev term uniquely. 
 
-### Contact Me
+## Contact Me
 
 - email: als2‍17 at cam do‍t ac dot u‍k
 

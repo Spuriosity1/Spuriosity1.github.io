@@ -70,6 +70,28 @@ code {
     }
 }
 
+
+// table of contents
+.sidebar {
+    position: sticky;
+    top: 10px;
+    width: 300px;
+    height:0px;
+} 
+
+// on small screens, make it into an icon
+@media screen and (max-width: $max-width+300) {
+.sidebar {
+    display:block;
+    position: static;
+    top: 10px;
+    width: 100%;
+    max-width: $max-width;
+    height: auto;
+    margin: auto;
+} 
+}
+
 // index
 .post-card{
     margin-top:1em;
