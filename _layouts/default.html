@@ -12,9 +12,13 @@
         </div>
     </div>
 
+    {% if page.notoc %}
+
+    {% else %}
     <div class="sidebar">
         {% include toc.html html=content %}
     </div>
+    {% endif %}
 
     <div class="container">
         <div class="content">

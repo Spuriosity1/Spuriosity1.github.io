@@ -8,7 +8,7 @@ katex: true
 
 
 
-If you're trying to follow along with the [kitaev seminar series]({% link _posts/2022-03-19-ising-chain-1.md %}), then you may have started to notice that dealing with massive strings of commutators is a pain. Generally, the process of simplifying an operator expression is quite mechainical:
+If you're trying to follow along with the [kitaev seminar series]({% link _posts/2022-03-19-ising-chain-1.md %}), then you may have started to notice that dealing with massive strings of commutators is a pain. Generally, the process of simplifying an operator expression is quite mechanical:
 
 1. Write down the expression.
 2. Rearrange everything until it's in the same order.
@@ -53,7 +53,7 @@ $$ +1 S^+ S^- S^z +1 S^- S^+ S^z +2 S^+ S^- +2 S^- S^+ \\
 +2 S^+ S^- S^z +4 S^+ S^- -2 S^z S^z -4 S^z 
 $$
 
-### Operators
+## Operators
 
 ```python3
 Operator(opstring, oplatex=None, scalar=False)
@@ -99,7 +99,7 @@ It's a lot easier to just draw a line under it and restrict the commutators
 to the signature `[Operator, Operator]  = Expression`, which is what I did. This is not as tight a
 constraint as it may seem, which we'll get to in a minute.
 
-### Commutators
+## Commutators
 
 `CommutatorAlgebra(strict=false)`
 
@@ -130,7 +130,7 @@ ca.set_commutator(ap,am)(2*az)
 The set values can then be read out with the transparently named `get_commutator` and
 `get_anticommutator` methods. 
 
-The fundamental operations are `move_right` and `move_left`. 
+The fundamental operations are `move_right` and `move_left`:
 {% highlight python %}
 x = ap*az*am + am*az*ap
 
@@ -142,7 +142,7 @@ print(x)
 {% endhighlight %}
 
 
-## Working with `Expression`s
+# Working with `Expression`s
 
 Most algebraic operations are implemented for `Expression` types.
 
@@ -187,7 +187,7 @@ print(y)
 
 
 
-### Substitutions
+## Substitutions
 
 Alright, I did re-implement a tiny bit of _Mathematica_. I found that I could not bear to part with
 `ReplaceAll`, aka `/.`.
@@ -195,7 +195,7 @@ Alright, I did re-implement a tiny bit of _Mathematica_. I found that I could no
 `Expression.replaceall((glob1, repl1), [(glob2, repl2),] ... )`
 
 `glob` must be castable to `Term`, and `repl` must be castable to `Expression`. This has to
-be written as one function (rather than a series of single-term replacements to deal with the fairly
+be written as one function (as opposed to a sequence of single-term replacements) to deal with the fairly
 common case that we want to swap two operators. 
 
 {% highlight python %}
@@ -210,7 +210,7 @@ with the case when `glob` is an `Expression` - it's tricky to implement and (imo
 Again, this operation is outside `CommutatorAlgebra` so is not authorised to reorder terms.
 
 
-### New knowledge from old
+## New knowledge from old
 
 A useful trick (in life, as well as in quantum mechanics) is to recognise frequently occurring
 blocks of operators and abstract them to a name. Similarly, if there is some frequently occurring
@@ -274,6 +274,6 @@ This gets used a lot in the [Ringflip file](https://github.com/Spuriosity1/Commu
 # The End of the day
 I'm certain that this could be made 'smarter', but I think it's fit for the purpose it's designed
 for: double-checking algebraic brute force. Feel free to contact me via GitHub if you have any
-issues using it or want to complain abput the low-quality documentation.
+issues using it or want to complain about the low-quality documentation.
 
 
